@@ -1,0 +1,41 @@
+/**
+ * This configuration file holds all secret information that is used in the local environment.
+ * This file is ignored by git.
+ */
+
+/**
+ * This is the template for the configuration file that holds
+ * all secret information that is used in the local environment.
+ * This file is checked in to git, but the localSettings.js file each developer
+ * should create based on this template is not.
+ */
+
+module.exports = {
+  secure: {
+    ldap: {
+      client: {
+        url: 'ldaps://ldap.ug.kth.se',
+        timeout: 300000,
+        connectTimeout: 3000,
+        maxConnections: 10,
+        idleTimeout: 300000,
+        checkInterval: 10000,
+        'reconnect': true
+      },
+      bind: {
+        // username: 'system.canvas@ug.kth.se',
+        // password: ''
+        username: ``,
+        password: ''
+      },
+      base: 'OU=UG,DC=ug,DC=kth,DC=se'
+    },
+    canvas: {
+      apiKey: ''
+    },
+    azure: {
+      queueConnectionString: 'Endpoint=sb://kth-integral.servicebus.windows.net/;SharedAccessKeyName=canvas-consumer;SharedAccessKey=',
+      queueName: ''
+    }
+  }
+}
