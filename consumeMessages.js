@@ -35,7 +35,7 @@ return body
 .then(readMessage)
     .catch(e => {
   if (e.message !== 'abort_chain') {
-  console.log('\nIn Error handling function testing to remove the message from queue.....')
+  console.log('\nAn Error occured.....')
   console.error(`Exception: `, e)
 }
 return readMessage()

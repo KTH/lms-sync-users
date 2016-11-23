@@ -5,6 +5,51 @@ var Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
 const colors = require('colors')
 
+function _parseError(err) {
+  // this function has to parse the error string, due to canvas API Promise rejecting error as a string, to be addressed later
+  let errorCodeString = "StatusCodeError:"
+  let errorCode = false
+  let errorCodeLength = 4
+  var errorIndex = err.indexOf(errorCodeString);
+  if (errorIndex > 0) {
+    let begin = errorIndex + errorCodeString.length
+    let end = begin + errorCodeLength
+    errorCode = parseInt(err.substring(begin, end))
+  }
+
+  if (errorCode) {
+    return errorCode
+  }
+
+  return false
+}
+
+
+function _handleError(err,sisCourseCode) {
+
+  if  (typeof(err) === "string") // when in arror, canvas API returns a prmoise reject with a string value, future code refactroring...
+  {
+    let eCode = _parseError(err)
+    if (eCode == 404) // The course code is not in canvas, do nothing.....
+    {
+      console.warn("Course does not exist in canvas, skipping, ".red + sisCourseCode.red)
+      return Promise.resolve("Course does not exist in canvas")
+    }
+    else if (eCode > 400) // Besides course not incanvase, Probably other problems with canvas.....
+    {
+      console.warn("Canvas is not accessable, Invalid token or other Canvas related errors..... ".red + sisCourseCode.red)
+      return Promise.reject(new Error(er))
+    }
+    else { //It is an error and unrelated to canvas HTTP requests probably IO errors
+      console.warn("Other error..... ".red + sisCourseCode.red)
+      return Promise.reject(new Error(err))
+    }
+  }// Handels error of type error
+
+    console.warn("Some Error occured, rejecting promise..... ".red + sisCourseCode.red)
+    Promise.reject(err)
+
+}
 
 function _process (msg) {
 
@@ -64,32 +109,26 @@ function _process (msg) {
     }
   }
   d = new Date()
-  console.info(`\nIn _process ${sisCourseCode}, processing for ${msgtype}`)
+  console.info(`\nIn_process ${sisCourseCode}, processing
+  for ${msgtype}`
+)
   csvfileName = csvfileName + sisCourseCode + '_' + d + '.csv'
   msgfileName = msgfileName + sisCourseCode + '.' + d + '.msg'
 
 
   return canvasApi.getCourse(sisCourseCode)
       .then(result => {
-    msg.member.map(user => csvString += `${sisCourseCode},${user},${msgtype}, active\n`)
+    msg.member.map(user => csvString += `${sisCourseCode},${user},${msgtype},active\n`)
   let data = header + csvString
   console.info(data)
   console.info('\nGoing to open file: ' + csvfile + ' ' + msgfile)
   return fs.writeFileAsync(csvfile, data, {})
-          .then(() => fs.writeFileAsync(msgfile, JSON.stringify(msg, null, 4), {}))
-.then(() => canvasApi.sendCreatedUsersCsv(csvfile))
-.then(canvasReturnValue => console.log(canvasReturnValue, null, 4))
-})
-.catch(error=> {
-  if (error.indexOf('StatusCodeError: 404') >= 0) // The course code is not in canvas, do nothing.....
-{
-  console.warn("Course does not exist in canvas, skipping, ".red + sisCourseCode.red)
-  return Promise.resolve("Course does not exist in canvas")
+          .then(() => fs.writeFileAsync(msgfile, JSON.stringify(msg, null, 4), {})
+).then(() => canvasApi.sendCreatedUsersCsv(csvfile)
+).then(canvasReturnValue => console.log(canvasReturnValue, null, 4))})
+.catch(error => _handleError(error,sisCourseCode))
 }
-else {
-  // These are errors related to creating a file or sending CSV file to Canvas through the API
-  return Promise.resolve("Error in handleCourseMessage, _process function" + JSON.stringify(error,null,4))}})
-}
+
 
 
 
