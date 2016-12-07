@@ -14,7 +14,6 @@ const getEnv = require('kth-node-configuration').getEnv
  * should create based on this template is not.
  */
 
-
 module.exports = {
   secure: {
     ldap: {

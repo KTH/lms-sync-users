@@ -33,5 +33,7 @@ docker-compose*.yml
 # test coverage
 coverage
 
+# Ingoring test catalogs
+CSV
+MSG
 allUsers.csv
-canvasApi.js

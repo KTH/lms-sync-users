@@ -25,7 +25,7 @@ module.exports = {
       bind: {
         // username: 'system.canvas@ug.kth.se',
         // password: ''
-        username: ``,
+        username: '',
         password: ''
       },
       base: 'OU=UG,DC=ug,DC=kth,DC=se'
