@@ -29,9 +29,8 @@ function convertToCanvasUser (msg) {
 }
 
 module.exports = function (msg) {
-
   if (!isInScope(msg)) {
-    log.info('\nUser is not an employee and not a student, out of the affilication scope. Skipping user ' + msg.username + ' ' + msg.kthid, ' with affiliation ', msg.affiliation)
+    log.info('\nUser is not an employee and not a student, out of the affilication scope. Skipping user ' + msg.username + ' ' + msg.kthid + ' with affiliation ' + msg.affiliation)
     return Promise.resolve('User not in affiliation scope...')
   }
 
