@@ -1,7 +1,6 @@
 /**
  * System controller for functions such as /about and /monitor
  */
-const rp = require('request-promise')
 const express = require('express')
 const router = express.Router()
 const config = require('./init/configuration')
@@ -28,7 +27,7 @@ var _about = function (req, res) {
  */
 var _monitor = function (req, res) {
   res.setHeader('Content-Type', 'text/plain')
-  res.send(`APPLICATION_STATUS: OK`)
+  res.send('APPLICATION_STATUS: OK')
 }
 
 router.get('/_monitor', _monitor)

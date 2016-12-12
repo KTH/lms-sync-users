@@ -35,7 +35,17 @@ module.exports = {
     },
     azure: {
       queueConnectionString: 'Endpoint=sb://kth-integral.servicebus.windows.net/;SharedAccessKeyName=canvas-consumer;SharedAccessKey=',
-      queueName: ''
+      queueName: '',
+      StorageConnectionString: '',
+      databaseConnectionString '',
+      databaseName: '',
+      collectionName: '',
+      csvBlobName: '',
+      msgBlobName: '',
+      logBlobName: ''
+    },
+    localFile: {
+      csvDir: ''
     }
   }
 }
