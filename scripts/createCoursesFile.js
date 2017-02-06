@@ -14,7 +14,7 @@ const termin = process.env.TERMIN
 const period = process.env.PERIOD
 
 console.log('creating csv file using settings', termin, period)
-
+//
 const fileName = `csv/courses-${termin}-${period}.csv`
 
 function get (url) {
