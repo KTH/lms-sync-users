@@ -31,9 +31,9 @@
   "dependencies": {
     "amqp10": "^3.4.0",
     "blue-tape": "^1.0.0",
-    "canvas-api": "^3.1.0",
     "colors": "^1.1.2",
     "express": "^4.14.0",
+    "kth-canvas-api": "^0.4.4",
     "kth-node-configuration": "KTH/kth-node-configuration.git#v1.0.1",
     "kth-node-log": "KTH/kth-node-log.git#v1.0.1",
     "kth-node-server": "KTH/kth-node-server.git",
