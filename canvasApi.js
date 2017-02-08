@@ -6,3 +6,5 @@ const canvasApi = new CanvasApi(config.full.canvas.apiUrl, config.secure.canvas.
 canvasApi.logger = logger
 
 module.exports = canvasApi
+
+//
