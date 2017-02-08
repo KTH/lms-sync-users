@@ -41,13 +41,13 @@
     "message-type": "github:kth/node-message-type",
     "node-queue-adapter": "github:kth/node-queue-adapter",
     "request-promise": "^4.1.0",
+    "kth-canvas-utilities": "github:kth/kth-canvas-utilities",
     "yarn": "^0.19.1"
   },
   "devDependencies": {
     "concurrently": "^2.2.0",
     "cross-env": "^2.0.0",
     "istanbul": "^0.4.4",
-    "kth-canvas-utilities": "github:kth/kth-canvas-utilities",
     "pre-push": "^0.1.1",
     "proxyquire": "^1.7.10",
     "randomstring": "^1.1.5",
