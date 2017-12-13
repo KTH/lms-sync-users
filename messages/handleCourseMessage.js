@@ -10,7 +10,7 @@ const createCsvFile = require('./createCsvFile')
 function parseKey ({ug1Name, _desc}) {
   const {userType} = _desc
 
-  if ([type.students].includes(userType)) {
+  if ([type.students, type.antagna].includes(userType)) {
     return ugParser.parseKeyStudent(ug1Name)
   }
 
