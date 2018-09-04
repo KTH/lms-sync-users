@@ -16,4 +16,3 @@ app.use(config.proxyPrefixPath.uri, systemRoutes)
 // also serve the same urls without the /api prefix. TODO: this can be removed once the old, inprem servers has been removed
 app.use('/api' + config.proxyPrefixPath.uri, systemRoutes)
 app.start({logger: log})
-//
