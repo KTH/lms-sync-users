@@ -1,7 +1,7 @@
 const { handleCourseMessage } = require('./handleCourseMessage')
 const handleUserMessage = require('./handleUserMessage')
 const { handleStaffMessage } = require('./handleStaffMessage')
-const { type } = require('kth-message-type')
+const { type } = require('@kth/message-type')
 const log = require('../server/logging')
 
 module.exports = function (msg) {
