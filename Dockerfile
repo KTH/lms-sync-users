@@ -14,7 +14,7 @@ COPY ["config", "config"]
 COPY ["server", "server"]
 COPY ["messages", "messages"]
 
-RUN npm install --production --ignore-engines --no-optional
+RUN npm ci --production
 
 EXPOSE 3000
 
