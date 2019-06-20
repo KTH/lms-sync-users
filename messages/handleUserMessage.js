@@ -19,7 +19,8 @@ function convertToCanvasUser (msg) {
     let user = {
       pseudonym: {
         unique_id: `${msg.username}@kth.se`, // CSVs analogi av 'login_id'
-        sis_user_id: msg.kthid // CSVs analogi av 'user_id' needed for enrollments
+        sis_user_id: msg.kthid, // CSVs analogi av 'user_id' needed for enrollments
+        integration_id: msg.ladok3_student_uid // For setting integration_id on creation via the /users endpoint
       },
       user: {
         'name': `${msg.given_name} ${msg.family_name}`,
@@ -31,6 +32,9 @@ function convertToCanvasUser (msg) {
         type: 'email',
         address: msg.primary_email,
         skip_confirmation: true
+      },
+      login: {
+        integration_id: msg.ladok3_student_uid // For setting integration_id on update via the logins endpoint
       }
     }
     return user
@@ -45,6 +49,11 @@ async function createOrUpdate (user) {
     log.info('found user in canvas', userFromCanvas)
     log.info('update the user with new values: ', user)
     await canvasApi.updateUser(user, userFromCanvas.id)
+    const loginsForUser = await canvasApi.get(`users/${userFromCanvas.id}/logins`)
+    const login = loginsForUser.find((login) => {
+      return login.unique_id === userFromCanvas.login_id
+    })
+    await canvasApi.requestCanvas(`accounts/1/logins/${login.id}`, 'PUT', user)
   } catch (e) {
     if (e.statusCode === 404) {
       log.info('user doesnt exist in canvas. Create it.', user)
