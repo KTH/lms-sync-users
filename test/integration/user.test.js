@@ -28,7 +28,7 @@ test('should create a new user in canvas', t => {
 test('should create a new user in canvas even without ladokId', t => {
   t.plan(1)
   const kthid = randomstring.generate(8)
-  const ladokId = randomstring.generate(24)
+  const username = `${kthid}_abc`
   const message = {
     kthid,
     'ugClass': 'user',
