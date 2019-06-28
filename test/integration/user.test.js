@@ -93,10 +93,10 @@ test('should update a user in canvas', t => {
     username,
     'family_name': 'Stenberg',
     'given_name': 'Emil Stenberg Uppdaterad',
-    'primary_email': 'esandin@gmail.com',
-    'ladok3_student_uid': `${kthid}-ladok` }
+    'primary_email': 'esandin@gmail.com' }
 
   handleMessages(message, message2)
     .then(() => canvasApi.getUser(kthid))
-    .then(user => t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg'))
+    .then(user => t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
+    t.equal(user.integration_id, ''))
 })

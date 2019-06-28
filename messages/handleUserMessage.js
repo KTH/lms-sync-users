@@ -20,7 +20,7 @@ function convertToCanvasUser (msg) {
       pseudonym: {
         unique_id: `${msg.username}@kth.se`, // CSVs analogi av 'login_id'
         sis_user_id: msg.kthid, // CSVs analogi av 'user_id' needed for enrollments
-        integration_id: msg.ladok3_student_uid // For setting integration_id on creation via the /users endpoint
+        integration_id: msg.ladok3_student_uid || null // For setting integration_id on creation via the /users endpoint
       },
       user: {
         'name': `${msg.given_name} ${msg.family_name}`,
@@ -34,7 +34,7 @@ function convertToCanvasUser (msg) {
         skip_confirmation: true
       },
       login: {
-        integration_id: msg.ladok3_student_uid // For setting integration_id on update via the logins endpoint
+        integration_id: msg.ladok3_student_uid || null // For setting integration_id on update via the logins endpoint
       }
     }
     return user
