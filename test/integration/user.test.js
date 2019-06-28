@@ -94,9 +94,45 @@ test('should update a user in canvas', t => {
     'family_name': 'Stenberg',
     'given_name': 'Emil Stenberg Uppdaterad',
     'primary_email': 'esandin@gmail.com',
-    'ladok3_student_uid': `${kthid}-ladok` }
+    'ladok3_student_uid': ladokId
+  }
 
   handleMessages(message, message2)
     .then(() => canvasApi.getUser(kthid))
-    .then(user => t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg'))
+    .then(user => t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
+    t.equal(user.integration_id, ''))
+})
+
+test('should update a user in canvas even if Ladok ID is not supplied', t => {
+  t.plan(1)
+  const kthid = 'emiluppdaterar-namn'
+  const username = `${kthid}_abc`
+  const ladokId = randomstring.generate(24)
+
+  const message = {
+    kthid,
+    'ugClass': 'user',
+    'deleted': false,
+    'affiliation': ['student'],
+    username,
+    'family_name': 'Stenberg',
+    'given_name': 'Emil Stenberg',
+    'primary_email': 'esandin@gmail.com',
+    'ladok3_student_uid': ladokId
+  }
+
+  const message2 = {
+    kthid,
+    'ugClass': 'user',
+    'deleted': false,
+    'affiliation': ['student'],
+    username,
+    'family_name': 'Stenberg',
+    'given_name': 'Emil Stenberg Uppdaterad',
+    'primary_email': 'esandin@gmail.com' }
+
+  handleMessages(message, message2)
+    .then(() => canvasApi.getUser(kthid))
+    .then(user => t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
+    t.equal(user.integration_id, ''))
 })
