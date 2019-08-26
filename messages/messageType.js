@@ -1,4 +1,4 @@
-const TYPE = {
+const Type = {
   USER: 'USER',
   COURSE: 'COURSE',
   UNKNOWN: 'UNKNOWN',
@@ -15,9 +15,16 @@ const USER_TYPE = {
   ANTAGNA: 'Admitted/antagen student'
 }
 
+const CANVAS_ROLES = {
+  [USER_TYPE.STUDENT]: {
+    role: 'Student',
+    role_id: 3
+  }
+}
+
 module.exports = {
-  TYPE,
-  USER_TYPE,
+  Type,
+  UserType,
   addDescription (msg) {
     const result = Object.assign({}, msg)
     if (result.ugClass === 'user') {
