@@ -1,21 +1,23 @@
-const type = {
-  user: 'USER',
-  course: 'COURSE',
-  unknown: 'UNKNOWN'
+const TYPE = {
+  USER: 'USER',
+  COURSE: 'COURSE',
+  UNKNOWN: 'UNKNOWN',
+  STAFF: 'STAFF'
 }
 
-const userTypes = {
-  students: 'STUDENT',
-  omregistrerade: 'Re-reg student',
-  staff: 'STAFF',
-  teachers: 'TEACHER',
-  courseresponsibles: 'Course Responsible',
-  assistants: 'TA',
-  antagna: 'Admitted/antagen student'
+const USER_TYPE = {
+  STUDENT: 'STUDENT',
+  OMREGISTRERADE: 'Re-reg student',
+  STAFF: 'STAFF',
+  TEACHER: 'TEACHER',
+  COURSE_RESPONSIBLE: 'Course Responsible',
+  ASSISTANT: 'TA',
+  ANTAGNA: 'Admitted/antagen student'
 }
 
 module.exports = {
-  type,
+  TYPE,
+  USER_TYPE,
   addDescription (msg) {
     const result = Object.assign({}, msg)
     if (result.ugClass === 'user') {
