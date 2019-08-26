@@ -2,7 +2,7 @@ const log = require('../server/logging')
 const EventEmitter = require('events')
 const eventEmitter = new EventEmitter()
 const history = require('./history')
-const { addDescription } = require('@kth/message-type')
+const { addDescription } = require('./messgeType')
 const handleMessage = require('./handleMessage')
 const container = require('rhea')
 

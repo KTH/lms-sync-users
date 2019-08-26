@@ -1,6 +1,6 @@
 'use strict'
 
-const { type } = require('@kth/message-type')
+const { type } = require('./mesageType')
 const canvasApi = require('../canvasApi')
 const ugParser = require('./ugParser')
 const createCsvFile = require('./createCsvFile')

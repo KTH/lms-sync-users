@@ -1,5 +1,5 @@
 var test = require('tape')
-const { type } = require('@kth/message-type')
+const { type } = require('../../../messages/mesageType')
 const proxyquire = require('proxyquire')
 require('rewire-global')
 const sinon = require('sinon')
