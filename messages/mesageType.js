@@ -1,14 +1,17 @@
 const type = {
-  omregistrerade: 'Re-reg student',
   user: 'USER',
   course: 'COURSE',
+  unknown: 'UNKNOWN'
+}
+
+const userTypes = {
   students: 'STUDENT',
+  omregistrerade: 'Re-reg student',
   staff: 'STAFF',
   teachers: 'TEACHER',
   courseresponsibles: 'Course Responsible',
   assistants: 'TA',
-  antagna: 'Admitted/antagen student',
-  unknown: 'UNKNOWN'
+  antagna: 'Admitted/antagen student'
 }
 
 module.exports = {
@@ -40,37 +43,37 @@ module.exports = {
     if (result.ug1Name.match(isTeacherRegExp)) {
       result._desc = {
         type: type.course,
-        userType: type.teachers
+        userType: userTypes.teachers
       }
     } else if (result.ug1Name.match(isAssistantsRegExp)) {
       result._desc = {
         type: type.course,
-        userType: type.assistants
+        userType: userTypes.assistants
       }
     } else if (result.ug1Name.match(isCourseResponsibleRegExp)) {
       result._desc = {
         type: type.course,
-        userType: type.courseresponsibles
+        userType: userTypes.courseresponsibles
       }
     } else if (result.ug1Name.match(isStudentsRegExp)) {
       result._desc = {
         type: type.course,
-        userType: type.students
+        userType: userTypes.students
       }
     } else if (result.ug1Name.match(isOmregRegexp)) {
       result._desc = {
         type: type.course,
-        userType: type.omregistrerade
+        userType: userTypes.omregistrerade
       }
     } else if (result.ug1Name.match(isAntagnaRegexp)) {
       result._desc = {
         type: type.course,
-        userType: type.antagna
+        userType: userTypes.antagna
       }
     } else if (result.ug1Name.match(isStaff)) {
       result._desc = {
         type: type.staff,
-        userType: type.students
+        userType: userTypes.students
       }
     } else {
       result._desc = {
