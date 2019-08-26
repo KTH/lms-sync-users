@@ -5,7 +5,7 @@ const Type = {
   STAFF: 'STAFF'
 }
 
-const USER_TYPE = {
+const UserType = {
   STUDENT: 'STUDENT',
   OMREGISTRERADE: 'Re-reg student',
   STAFF: 'STAFF',
@@ -51,42 +51,42 @@ module.exports = {
 
     if (result.ug1Name.match(isTeacherRegExp)) {
       result._desc = {
-        type: type.course,
-        userType: userTypes.teachers
+        type: Type.COURSE,
+        userType: UserType.TEACHER
       }
     } else if (result.ug1Name.match(isAssistantsRegExp)) {
       result._desc = {
-        type: type.course,
-        userType: userTypes.assistants
+        type: Type.COURSE,
+        userType: UserType.ASSISTANT
       }
     } else if (result.ug1Name.match(isCourseResponsibleRegExp)) {
       result._desc = {
-        type: type.course,
-        userType: userTypes.courseresponsibles
+        type: Type.COURSE,
+        userType: UserType.COURSE_RESPONSIBLE
       }
     } else if (result.ug1Name.match(isStudentsRegExp)) {
       result._desc = {
-        type: type.course,
-        userType: userTypes.students
+        type: Type.COURSE,
+        userType: UserType.STUDENT
       }
     } else if (result.ug1Name.match(isOmregRegexp)) {
       result._desc = {
-        type: type.course,
-        userType: userTypes.omregistrerade
+        type: Type.COURSE,
+        userType: UserType.OMREGISTRERADE
       }
     } else if (result.ug1Name.match(isAntagnaRegexp)) {
       result._desc = {
-        type: type.course,
-        userType: userTypes.antagna
+        type: Type.COURSE,
+        userType: UserType.ANTAGNA
       }
     } else if (result.ug1Name.match(isStaff)) {
       result._desc = {
-        type: type.staff,
-        userType: userTypes.students
+        type: Type.STAFF,
+        userType: UserType.STUDENT
       }
     } else {
       result._desc = {
-        type: type.unknown
+        type: Type.UNKNOWN
       }
     }
     return result
