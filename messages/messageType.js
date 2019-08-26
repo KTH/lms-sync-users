@@ -15,21 +15,49 @@ const UserType = {
   ANTAGNA: 'Admitted/antagen student'
 }
 
+const CanvasRole = {
+  [UserType.STUDENT]: {
+    role: 'Student',
+    role_id: 3
+  },
+  [UserType.OMREGISTRERADE]: {
+    role: 'Re-reg student',
+    role_id: 11
+  },
+  [UserType.TEACHER]: {
+    role: 'Teacher',
+    role_id: 4
+  },
+  [UserType.COURSE_RESPONSIBLE]: {
+    role: 'Course Responsible',
+    role_id: 9
+  },
+  [UserType.ASSISTANT]: {
+    role: 'TA',
+    role_id: 5
+  },
+  [UserType.ANTAGNA]: {
+    role: 'Admitted not registered',
+    role_id: 25
+  }
+}
+
 module.exports = {
   Type,
   UserType,
+  CanvasRole,
   addDescription (msg) {
     const result = Object.assign({}, msg)
     if (result.ugClass === 'user') {
       result._desc = {
-        type: type.user
+        type: Type.USER
       }
       return result
     }
 
     if (!result.ug1Name) {
       result._desc = {
-        type: type.unknown
+        type: Type.UNKNOWN
       }
       return result
     }
