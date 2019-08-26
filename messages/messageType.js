@@ -15,13 +15,6 @@ const UserType = {
   ANTAGNA: 'Admitted/antagen student'
 }
 
-const CANVAS_ROLES = {
-  [USER_TYPE.STUDENT]: {
-    role: 'Student',
-    role_id: 3
-  }
-}
-
 module.exports = {
   Type,
   UserType,
