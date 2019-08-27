@@ -3,6 +3,7 @@ const Promise = require('bluebird')
 const fs = require('fs')
 const readFile = Promise.promisify(fs.readFile)
 const log = require('../server/logging')
+const { CanvasRole } = require('./messageType')
 
 module.exports = async function createCsvFile (msg, sisCourseCodes, csvDir, csvVol) {
   let userType = msg._desc.userType
@@ -15,10 +16,11 @@ module.exports = async function createCsvFile (msg, sisCourseCodes, csvDir, csvV
 
   // create one line per sisCourseId, per user. One user can be enrolled to multiple courses, for instance if this is re-registered students
   function oneLinePerSisCourseId (userId) {
-    return Promise.each(sisCourseCodes, sisSectionId => writeLine([sisSectionId, userId, userType, 'active'], fileName))
+    const canvasRole = CanvasRole[userType]
+    return Promise.each(sisCourseCodes, sisSectionId => writeLine([sisSectionId, userId, canvasRole.role_id, 'active'], fileName))
   }
 
-  await writeLine(['section_id', 'user_id', 'role', 'status'], fileName)
+  await writeLine(['section_id', 'user_id', 'role_id', 'status'], fileName)
   await Promise.map(msg.member, oneLinePerSisCourseId)
   const data = await readFile(fileName, 'utf8')
   log.info('Wrote file', fileName, '\n', data)

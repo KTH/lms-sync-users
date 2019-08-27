@@ -1,32 +1,16 @@
+# Run integration tests inside its own container
+# Read more: https://github.com/kth/evolene#integration-testing
 version: '3.2'
 
 services:
-  #############################################
-  # Start app as a container
-  #############################################
-  web:
-    # build from local Dockerfile
+  integration_tests:
     build: .
-    # if not --build and kth-azure-app already exists in
-    # your local computers registry 'image' is used.
     image: $LOCAL_IMAGE_ID
-
-    # LOCAL_IMAGE_ID, IMAGE_NAME and IMAGE_VERSION
-
-    # Since we do not want to add tests to our
-    # production image. We mount the catalog
-    # 'tests' on in the repo on your local machine
-    # to /tests on the inside of the container.
-    # The volume mount is done at startup.
     volumes:
       - ./test:/test
       - ./node_modules:/node_modules
-    # The unit test command that triggers tests to be run
-    # inside the container
-    # This example runs test in package.json which is
-    # part of the kth-azure-app image.
     tty: true
-    command: npm run test:docker-integration 
+    command: npm run test:docker-integration
     environment:
       - PROXY_PREFIX_PATH
       - CSV_DIR

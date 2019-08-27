@@ -1,6 +1,6 @@
 'use strict'
 
-const { type } = require('@kth/message-type')
+const { UserType } = require('./messageType')
 const canvasApi = require('../canvasApi')
 const ugParser = require('./ugParser')
 const createCsvFile = require('./createCsvFile')
@@ -8,11 +8,11 @@ const createCsvFile = require('./createCsvFile')
 function parseKey ({ ug1Name, _desc }) {
   const { userType } = _desc
 
-  if ([type.students].includes(userType)) {
+  if ([UserType.STUDENT].includes(userType)) {
     return ugParser.parseKeyStudent(ug1Name)
   }
 
-  if ([type.teachers, type.assistants, type.courseresponsibles].includes(userType)) {
+  if ([UserType.TEACHER, UserType.ASSISTANT, UserType.COURSE_RESPONSIBLE].includes(userType)) {
     return ugParser.parseKeyTeacher(ug1Name)
   }
 

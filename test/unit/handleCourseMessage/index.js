@@ -1,5 +1,5 @@
 var test = require('tape')
-const { type } = require('@kth/message-type')
+const { UserType } = require('../../../messages/messageType')
 const proxyquire = require('proxyquire')
 require('rewire-global')
 const sinon = require('sinon')
@@ -7,7 +7,7 @@ const sinon = require('sinon')
 test('should NOT parse key:student for antagna', t => {
   const ugParser = { parseKeyStudent: sinon.spy() }
   const handleCourseMessages = proxyquire('../../../messages/handleCourseMessage', { './ugParser': ugParser })
-  t.throws(() => handleCourseMessages.parseKey({ ug1Name: 'ladok2.kurser.SF.1626.antagna_20171.1', _desc: { userType: type.antagna } }))
+  t.throws(() => handleCourseMessages.parseKey({ ug1Name: 'ladok2.kurser.SF.1626.antagna_20171.1', _desc: { userType: UserType.ANTAGNA } }))
   t.end()
 })
 
@@ -21,7 +21,7 @@ test('should send the csv file for user type is student', t => {
   // .returns(Promise.reject({statusCode:404}))
   const message = {
     _desc: {
-      userType: type.students
+      userType: UserType.STUDENT
     }
   }
 
