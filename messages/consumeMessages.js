@@ -124,10 +124,10 @@ container.on('message', async function (context) {
     log.debug(`logging azure library ids. container id: ${context.container.id}, identifier: ${context.connection.amqp_transport.identifier}`)
 
     log.debug(`Consumed 1 credit. `)
-    const now = new Date()
-    const queueDate = new Date(context.message.message_annotations['x-opt-enqueued-time'])
-    const dateDiff = now - queueDate
-    log.info({ 'metric.consumeMessages': dateDiff })
+    const now = Date.now()
+    const queued = context.message.message_annotations['x-opt-enqueued-time']
+    const msDiff = now - queued
+    log.info({ 'metric.consumeMessages': msDiff })
 
     if (context.message.body.typecode === 117) {
       jsonData = { body: JSON.parse(Buffer.from(context.message.body.content).toString()) }
