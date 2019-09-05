@@ -122,13 +122,7 @@ container.on('message', async function (context) {
   let result
   try {
     log.debug(`logging azure library ids. container id: ${context.container.id}, identifier: ${context.connection.amqp_transport.identifier}`)
-
     log.debug(`Consumed 1 credit. `)
-    const now = Date.now()
-    const queued = context.message.message_annotations['x-opt-enqueued-time']
-    const msDiff = now - queued
-    log.info({ 'metric.consumeMessages': msDiff })
-
     if (context.message.body.typecode === 117) {
       jsonData = { body: JSON.parse(Buffer.from(context.message.body.content).toString()) }
       initLogger(jsonData)
@@ -137,6 +131,11 @@ container.on('message', async function (context) {
       if (jsonData.body) {
         try {
           const body = addDescription(jsonData.body)
+          const now = Date.now()
+          const enqueuedTime = context.message.message_annotations['x-opt-enqueued-time']
+          const timeInQueue = now - enqueuedTime
+          log.info({ 'metric.timeInQueue': timeInQueue })
+          log.info({ 'metric.handleMessage': 1 })
           result = await handleMessage(body)
           log.info('result from handleMessage', result)
           context.delivery.accept()
