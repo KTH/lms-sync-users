@@ -5,7 +5,6 @@ const { Type, UserType } = require('./messageType')
 const log = require('../server/logging')
 
 module.exports = function (msg) {
-  log.info({ 'metric.handleMessage': 1 })
   if (msg._desc.type === Type.COURSE && msg._desc.userType !== UserType.ANTAGNA && msg._desc.userType !== UserType.OMREGISTRERADE) {
     log.info('Started handling message to update a course info...')
     return handleCourseMessage(msg)
