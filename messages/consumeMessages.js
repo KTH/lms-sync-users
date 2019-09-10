@@ -45,7 +45,7 @@ async function stop () {
   }
 }
 
-function initLogger (msg) {
+function initLogger (msg, msgId) {
   let config
   if (msg) {
     const { body } = msg
@@ -53,7 +53,7 @@ function initLogger (msg) {
       kthid: body && body.kthid,
       ug1Name: body && body.ug1Name,
       ugversion: (msg && msg.applicationProperties && msg.applicationProperties.UGVersion) || undefined,
-      messageId: (msg && msg.properties && msg.properties.messageId) || undefined
+      messageId: msgId || undefined
     }
   } else {
     config = {}
@@ -125,7 +125,7 @@ container.on('message', async function (context) {
     log.debug(`Consumed 1 credit. `)
     if (context.message.body.typecode === 117) {
       jsonData = { body: JSON.parse(Buffer.from(context.message.body.content).toString()) }
-      initLogger(jsonData)
+      initLogger(jsonData, context.message.message_id)
       log.info(`New message from ug queue for AMQP container ${context.connection.container_id}`, jsonData)
       history.setIdleTimeStart()
       if (jsonData.body) {
