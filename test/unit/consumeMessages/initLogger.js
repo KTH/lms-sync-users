@@ -13,13 +13,11 @@ test('should init the logger when a message without body is passed', t => {
   const message = {
     applicationProperties: {
       UGVersion: 123
-    },
-    properties: {
-      messageId: 'abc'
     }
   }
+  const messageId = 'abc'
 
-  initLogger(message)
+  initLogger(message, messageId)
 
   t.ok(log.init.calledWith({
     kthid: undefined,
@@ -36,13 +34,11 @@ test('should init the logger when a message without a body is passed', t => {
   const message = {
     applicationProperties: {
       UGVersion: 123
-    },
-    properties: {
-      messageId: 'abc'
     }
   }
+  const messageId = 'abc'
 
-  initLogger(message)
+  initLogger(message, messageId)
 
   t.ok(log.init.calledWith({
     kthid: undefined,
@@ -60,13 +56,11 @@ test('should init the logger when a message with a body, without kthid or ug1nam
     body: { 1: 2 },
     applicationProperties: {
       UGVersion: 123
-    },
-    properties: {
-      messageId: 'abc'
     }
   }
+  const messageId = 'abc'
 
-  initLogger(message)
+  initLogger(message, messageId)
 
   t.ok(log.init.calledWith({
     kthid: undefined,
@@ -84,13 +78,11 @@ test('should init the logger when a message with a body, with kthid and ug1name 
     body: { ug1Name: 'someUg1Name', kthid: 'someKthid' },
     applicationProperties: {
       UGVersion: 123
-    },
-    properties: {
-      messageId: 'abc'
     }
   }
+  const messageId = 'abc'
 
-  initLogger(message)
+  initLogger(message, messageId)
 
   t.ok(log.init.calledWith({
     kthid: 'someKthid',
