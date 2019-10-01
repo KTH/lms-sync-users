@@ -11,6 +11,8 @@ const [waitAmount, waitUnit] = [10, 'hours']
 const history = require('../messages/history')
 const log = require('../server/logging')
 const version = require('../config/version')
+const azure = require('azure-sb')
+const { promisify } = require('util')
 
 /* GET /_about
  * About page
@@ -45,17 +47,47 @@ async function checkCanvasKey () {
   return canvasApi.getRootAccount()
 }
 
+async function deadLetterCount () {
+  try {
+    const connectionString = process.env.AZURE_SERVICEBUS_CONNECTION_STRING
+    const topicName = process.env.AZURE_SERVICEBUS_TOPIC_NAME
+    const subscriptionName = process.env.AZURE_SERVICEBUS_SUBSCRIPTION_NAME
+
+    const service = azure.createServiceBusService(connectionString)
+    const getSubscription = promisify(service.getSubscription.bind(service))
+
+    const r = await getSubscription(topicName, subscriptionName)
+
+    return r.CountDetails['d3p1:DeadLetterMessageCount']
+  } catch (e) {
+    log.info('An error occured:', e)
+    return false
+  }
+}
+
+async function checkDeadLetterQueue (dlcount) {
+  try {
+    return (dlcount === 0)
+  } catch (e) {
+    log.info('An error occured:', e)
+    return false
+  }
+}
+
 async function _monitor (req, res) {
   const canvasOk = await checkCanvasStatus()
   const canvasKeyOk = await checkCanvasKey()
+  const dlCount = await deadLetterCount()
+  const dlqOk = await checkDeadLetterQueue(dlCount)
   res.setHeader('Content-Type', 'text/plain')
   const checkTimeAgainst = moment().subtract(waitAmount, waitUnit)
   const idleTimeOk = history.idleTimeStart.isAfter(checkTimeAgainst)
 
   log.info(`checking idle time: last time a message was read was: ${history.idleTimeStart}, compare this to now minus some predifined time: ${checkTimeAgainst}`)
   const statusStr = [
-    `APPLICATION_STATUS: ${idleTimeOk && canvasKeyOk ? 'OK' : 'ERROR'} ${packageFile.name}-${version.jenkinsBuild}`,
+    `APPLICATION_STATUS: ${idleTimeOk && canvasKeyOk && dlqOk ? 'OK' : 'ERROR'} ${packageFile.name}-${version.jenkinsBuild}`,
     `READ MESSAGE FROM AZURE: ${idleTimeOk ? `OK. The server has waited less then ${waitAmount} ${waitUnit} for a message.` : `ERROR. The server has not received a message in the last ${waitAmount} ${waitUnit}`}`,
+    `DLQ: ${dlqOk ? `OK. The dead letter queue is empty.` : `ERROR. There are currently ${dlCount} in the queue.`}`,
     `CANVAS: ${canvasOk ? 'OK' : 'Canvas is down'}`,
     `CANVASKEY: ${canvasKeyOk ? 'OK' : 'Invalid access token (in case if CANVAS is "OK")'}`
   ].join('\n')
