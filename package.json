@@ -14,6 +14,7 @@
     "debug": "NODE_ENV=development node --nolazy --inspect-brk=9229 app.js | bunyan -o short"
   },
   "dependencies": {
+    "azure-sb": "^0.10.6",
     "bluebird": "^3.5.5",
     "bunyan": "^1.8.12",
     "dotenv": "^6.2.0",
