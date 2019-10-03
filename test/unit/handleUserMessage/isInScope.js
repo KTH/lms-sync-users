@@ -30,6 +30,15 @@ test('affiliation: member should be in scope', t => {
   t.ok(result)
 })
 
+test('affiliation: affiliate should be in scope', t => {
+  const msg = {
+    affiliation: ['affiliate']
+  }
+  t.plan(1)
+  const result = isInScope(msg)
+  t.ok(result)
+})
+
 test('affiliation: other should NOT be in scope', t => {
   const msg = {
     affiliation: ['other']
