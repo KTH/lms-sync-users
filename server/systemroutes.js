@@ -49,25 +49,15 @@ async function checkCanvasKey () {
 
 async function deadLetterCount () {
   try {
-    const connectionString = process.env.AZURE_SERVICEBUS_CONNECTION_STRING
-    const topicName = process.env.AZURE_SERVICEBUS_TOPIC_NAME
-    const subscriptionName = process.env.AZURE_SERVICEBUS_SUBSCRIPTION_NAME
-
+    const topicName = process.env.AZURE_SUBSCRIPTION_PATH.slice(0, -14)
+    const subscriptionName = process.env.AZURE_SUBSCRIPTION_NAME
+    const connectionString = `Endpoint=sb://${process.env.AZURE_SERVICE_BUS_URL}/;SharedAccessKeyName=${process.env.AZURE_SUBSCRIPTION_NAME};SharedAccessKey=${process.env.AZURE_SHARED_ACCESS_KEY}`
     const service = azure.createServiceBusService(connectionString)
     const getSubscription = promisify(service.getSubscription.bind(service))
 
     const r = await getSubscription(topicName, subscriptionName)
 
-    return r.CountDetails['d3p1:DeadLetterMessageCount']
-  } catch (e) {
-    log.info('An error occured:', e)
-    return false
-  }
-}
-
-async function checkDeadLetterQueue (dlcount) {
-  try {
-    return (dlcount === 0)
+    return parseInt(r.CountDetails['d3p1:DeadLetterMessageCount'], 10)
   } catch (e) {
     log.info('An error occured:', e)
     return false
@@ -78,7 +68,7 @@ async function _monitor (req, res) {
   const canvasOk = await checkCanvasStatus()
   const canvasKeyOk = await checkCanvasKey()
   const dlCount = await deadLetterCount()
-  const dlqOk = await checkDeadLetterQueue(dlCount)
+  const dlqOk = (dlCount === 0)
   res.setHeader('Content-Type', 'text/plain')
   const checkTimeAgainst = moment().subtract(waitAmount, waitUnit)
   const idleTimeOk = history.idleTimeStart.isAfter(checkTimeAgainst)
