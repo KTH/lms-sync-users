@@ -22,10 +22,21 @@ pipeline {
         // These are the commands run in the original Jenkins project
         stage('Original Process') {
             steps {
-                sh 'ls $JENKINS_HOME/workspace/zermatt/jenkins/'
-                sh '$JENKINS_HOME/workspace/zermatt/jenkins/buildinfo-to-node-module.sh /config/version.js'
-                sh 'SLACK_CHANNELS="#team-e-larande-build,#pipeline-logs" DEBUG=True EXPERIMENTAL=True $EVOLENE_DIRECTORY/run.sh'
-                sh 'docker images'
+                withCredentials([
+                        string(credentialsId: 'CANVAS_API_KEY', variable: 'CANVAS_ADMIN_API_TOKEN'),
+                        string(credentialsId: 'CANVAS_API_URL', variable: 'CANVAS_API_URL'),
+                        string(credentialsId: 'AZURE_SHARED_ACCESS_KEY', variable: 'AZURE_SHARED_ACCESS_KEY'),
+                        string(credentialsId: 'AZURE_SHARED_ACCESS_KEY_NAME', variable: 'AZURE_SHARED_ACCESS_KEY_NAME'),
+                        string(credentialsId: 'PROXY_PREFIX_PATH', variable: 'PROXY_PREFIX_PATH'),
+                        string(credentialsId: 'CSV_DIR', variable: 'CSV_DIR'),
+                        string(credentialsId: 'LOG_LEVEL', variable: 'LOG_LEVEL'),
+                        string(credentialsId: 'LOG_SRC', variable: 'LOG_SRC')
+                ]){
+                    sh 'ls $JENKINS_HOME/workspace/zermatt/jenkins/'
+                    sh '$JENKINS_HOME/workspace/zermatt/jenkins/buildinfo-to-node-module.sh /config/version.js'
+                    sh 'SLACK_CHANNELS="#team-e-larande-build,#pipeline-logs" DEBUG=True EXPERIMENTAL=True $EVOLENE_DIRECTORY/run.sh'
+                    sh 'docker images'
+                }
             }
         }
     }
