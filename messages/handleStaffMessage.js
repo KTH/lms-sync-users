@@ -15,9 +15,9 @@ async function handleStaffMessage (msg) {
   }
 
   await writeLine(['section_id', 'user_id', 'role_id', 'status'], fileName)
-  for (let i of [1, 2, 3, 4, 5]) {
+  for (const i of [1, 2, 3, 4, 5]) {
     const sisSectionId = `${msg.ug1Name}.section${i}`
-    for (let member of msg.member) {
+    for (const member of msg.member) {
       const canvasRole = CanvasRole[msg._desc.userType]
       await writeLine([sisSectionId, member, canvasRole.role_id, 'active'], fileName)
     }

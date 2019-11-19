@@ -7,7 +7,7 @@
   "scripts": {
     "test:integration": "cross-env NODE_ENV=test tape \"test/integration/*.js\" -r dotenv/config | tap-spec",
     "coverage": "cross-env NODE_ENV=development istanbul cover tape -- \"messages/*.js\" -- \"server/**/*.js\" -- \"test/**/*.js\"",
-    "test": "standard; cross-env NODE_ENV=test tape \"test/unit/**/*.js\" | tap-spec",
+    "test": "standard && cross-env NODE_ENV=test tape \"test/unit/**/*.js\" | tap-spec",
     "test:docker-unit": "apk update; apk add python make; npm install --no-optional; npm test",
     "test:docker-integration": "apk update; apk add python make; npm install --no-optional; npm run test:integration",
     "start": "cross-env NODE_ENV=development nodemon app.js",
@@ -37,7 +37,7 @@
     "rewire": "^2.5.2",
     "rewire-global": "^1.0.11",
     "sinon": "^5.1.1",
-    "standard": "^12.0.1",
+    "standard": "14.3.1",
     "tap-spec": "^5.0.0",
     "tape": "^4.11.0"
   }

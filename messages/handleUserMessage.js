@@ -16,17 +16,17 @@ function convertToCanvasUser (msg) {
   log.info('\nConverting the user-type message to canvasApi format for: ' + msg.username + ' ' + msg.kthid, ' msg affiliation ', msg.affiliation)
 
   if (msg.username && (msg.given_name || msg.family_name) && msg.kthid) {
-    let user = {
+    const user = {
       pseudonym: {
         unique_id: `${msg.username}@kth.se`, // CSVs analogi av 'login_id'
         sis_user_id: msg.kthid, // CSVs analogi av 'user_id' needed for enrollments
         integration_id: msg.ladok3_student_uid || null // For setting integration_id on creation via the /users endpoint
       },
       user: {
-        'name': `${msg.given_name} ${msg.family_name}`,
-        'email': msg.primary_email, // must be when 'updating' user
-        'sortable_name': `${msg.family_name}, ${msg.given_name}`,
-        'short_name': null // a fix to make sure that display name is updated
+        name: `${msg.given_name} ${msg.family_name}`,
+        email: msg.primary_email, // must be when 'updating' user
+        sortable_name: `${msg.family_name}, ${msg.given_name}`,
+        short_name: null // a fix to make sure that display name is updated
       },
       communication_channel: { // must be when 'creating' user
         type: 'email',

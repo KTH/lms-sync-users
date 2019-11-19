@@ -12,7 +12,7 @@ const subscriptionNamePrefix = 'lms-sub-integration-test-'
 
 function createSBService (queueConnectionString) {
   const sBService = azureSb.createServiceBusService(queueConnectionString)
-  sBService.logger = new azureCommon.Logger(azureCommon.Logger.LogLevels['TRACE'])
+  sBService.logger = new azureCommon.Logger(azureCommon.Logger.LogLevels.TRACE)
 
   return {
 

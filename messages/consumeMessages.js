@@ -122,7 +122,7 @@ container.on('message', async function (context) {
   let result
   try {
     log.debug(`logging azure library ids. container id: ${context.container.id}, identifier: ${context.connection.amqp_transport.identifier}`)
-    log.debug(`Consumed 1 credit. `)
+    log.debug('Consumed 1 credit. ')
     if (context.message.body.typecode === 117) {
       jsonData = { body: JSON.parse(Buffer.from(context.message.body.content).toString()) }
       initLogger(jsonData, context.message.message_id)
