@@ -10,6 +10,7 @@ services:
     volumes:
       - ./test:/lms-sync-users/test
       - ./node_modules:/lms-sync-users/node_modules
+      - ./.prettierignore:/lms-sync-users/.prettierignore
 
     tty: true
     command: npm run test:docker-unit
