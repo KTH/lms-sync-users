@@ -45,7 +45,13 @@ async function checkCanvasStatus () {
 }
 
 async function checkCanvasKey () {
-  return canvasApi.getRootAccount()
+  try {
+    
+  return await canvasApi.getRootAccount()
+  } catch (e) {
+    log.error('Could not use canvas api.')
+    return false
+  }
 }
 
 async function _monitor (req, res) {
