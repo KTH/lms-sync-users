@@ -67,7 +67,7 @@ test('should enroll an assistant in an existing course in canvas', async t => {
 test('should enroll an employee in Miljöutbildningen and Canvas at KTH', async t => {
   t.plan(2)
   const muId = 17839 // Miljöutbildningen
-  const ckId = 85 // Canvas at KTH
+  const ckId = 1 // Canvas at KTH
 
   // Create the "employee" in Canvas
   const employeeId = await createUser()
