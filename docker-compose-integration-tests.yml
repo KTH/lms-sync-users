@@ -7,8 +7,8 @@ services:
     build: .
     image: $LOCAL_IMAGE_ID
     volumes:
-      - ./test:/test
-      - ./node_modules:/node_modules
+      - ./test:/lms-sync-users/test
+      - ./node_modules:/lms-sync-users/node_modules
     tty: true
     command: npm run test:docker-integration
     environment:
