@@ -5,10 +5,17 @@ const readFile = Promise.promisify(fs.readFile)
 const log = require('../server/logging')
 const { CanvasRole } = require('./messageType')
 
-module.exports = async function createCsvFile (msg, sisCourseCodes, csvDir, csvVol) {
-  let userType = msg._desc.userType
+module.exports = async function createCsvFile (
+  msg,
+  sisCourseCodes,
+  csvDir,
+  csvVol
+) {
+  const userType = msg._desc.userType
 
-  const fileName = `${process.env.CSV_DIR || '/tmp/'}enrollments.${userType}.${sisCourseCodes[0]}.${Date.now()}.csv`
+  const fileName = `${process.env.CSV_DIR || '/tmp/'}enrollments.${userType}.${
+    sisCourseCodes[0]
+  }.${Date.now()}.csv`
   // Make sure that sisCourseCodes is an array, which makes the rest of this function simpler
   if (!Array.isArray(sisCourseCodes)) {
     sisCourseCodes = [sisCourseCodes]
@@ -17,7 +24,9 @@ module.exports = async function createCsvFile (msg, sisCourseCodes, csvDir, csvV
   // create one line per sisCourseId, per user. One user can be enrolled to multiple courses, for instance if this is re-registered students
   function oneLinePerSisCourseId (userId) {
     const canvasRole = CanvasRole[userType]
-    return Promise.each(sisCourseCodes, sisSectionId => writeLine([sisSectionId, userId, canvasRole.role_id, 'active'], fileName))
+    return Promise.each(sisCourseCodes, sisSectionId =>
+      writeLine([sisSectionId, userId, canvasRole.role_id, 'active'], fileName)
+    )
   }
 
   await writeLine(['section_id', 'user_id', 'role_id', 'status'], fileName)

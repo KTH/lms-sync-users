@@ -12,7 +12,13 @@ function parseKey ({ ug1Name, _desc }) {
     return ugParser.parseKeyStudent(ug1Name)
   }
 
-  if ([UserType.TEACHER, UserType.ASSISTANT, UserType.COURSE_RESPONSIBLE].includes(userType)) {
+  if (
+    [
+      UserType.TEACHER,
+      UserType.ASSISTANT,
+      UserType.COURSE_RESPONSIBLE
+    ].includes(userType)
+  ) {
     return ugParser.parseKeyTeacher(ug1Name)
   }
 

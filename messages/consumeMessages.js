@@ -24,7 +24,11 @@ let connection // eslint-disable-line
  */
 async function start (reconnect = true) {
   reconnectClosedConnection = reconnect
-  log.info(`Connecting to the following azure service bus: ${process.env.AZURE_SERVICE_BUS_URL}`)
+  log.info(
+    `Connecting to the following azure service bus: ${
+      process.env.AZURE_SERVICE_BUS_URL
+    }`
+  )
   connection = container.connect({
     transport: 'tls',
     host: process.env.AZURE_SERVICE_BUS_URL,
@@ -52,7 +56,11 @@ function initLogger (msg, msgId) {
     config = {
       kthid: body && body.kthid,
       ug1Name: body && body.ug1Name,
-      ugversion: (msg && msg.applicationProperties && msg.applicationProperties.UGVersion) || undefined,
+      ugversion:
+        (msg &&
+          msg.applicationProperties &&
+          msg.applicationProperties.UGVersion) ||
+        undefined,
       messageId: msgId || undefined
     }
   } else {
@@ -66,7 +74,11 @@ function initLogger (msg, msgId) {
 
 container.on('connection_open', function (context) {
   log.info('Connection was opened!')
-  log.info(`opening receiver for subscription: ${process.env.AZURE_SUBSCRIPTION_NAME} @ ${process.env.AZURE_SUBSCRIPTION_PATH}`)
+  log.info(
+    `opening receiver for subscription: ${
+      process.env.AZURE_SUBSCRIPTION_NAME
+    } @ ${process.env.AZURE_SUBSCRIPTION_PATH}`
+  )
   context.connection.open_receiver({
     name: process.env.AZURE_SUBSCRIPTION_NAME,
     source: {
@@ -121,18 +133,31 @@ container.on('message', async function (context) {
   let jsonData
   let result
   try {
-    log.debug(`logging azure library ids. container id: ${context.container.id}, identifier: ${context.connection.amqp_transport.identifier}`)
-    log.debug(`Consumed 1 credit. `)
+    log.debug(
+      `logging azure library ids. container id: ${
+        context.container.id
+      }, identifier: ${context.connection.amqp_transport.identifier}`
+    )
+    log.debug('Consumed 1 credit. ')
     if (context.message.body.typecode === 117) {
-      jsonData = { body: JSON.parse(Buffer.from(context.message.body.content).toString()) }
+      jsonData = {
+        body: JSON.parse(Buffer.from(context.message.body.content).toString())
+      }
       initLogger(jsonData, context.message.message_id)
-      log.info(`New message from ug queue for AMQP container ${context.connection.container_id}`, context.message, jsonData)
+      log.info(
+        `New message from ug queue for AMQP container ${
+          context.connection.container_id
+        }`,
+        context.message,
+        jsonData
+      )
       history.setIdleTimeStart()
       if (jsonData.body) {
         try {
           const body = addDescription(jsonData.body)
           const now = Date.now()
-          const enqueuedTime = context.message.message_annotations['x-opt-enqueued-time']
+          const enqueuedTime =
+            context.message.message_annotations['x-opt-enqueued-time']
           const timeInQueue = now - enqueuedTime
           log.info({ 'metric.timeInQueue': timeInQueue })
           log.info({ 'metric.handleMessage': 1 })
@@ -141,16 +166,32 @@ container.on('message', async function (context) {
           context.delivery.accept()
         } catch (e) {
           log.error(e)
-          log.info('Error Occured, releasing message back to queue...', jsonData)
-          context.delivery.modified({ deliveryFailed: true, undeliverable_here: false })
+          log.info(
+            'Error Occured, releasing message back to queue...',
+            jsonData
+          )
+          context.delivery.modified({
+            deliveryFailed: true,
+            undeliverable_here: false
+          })
         }
       } else {
-        log.info('Message is empty or undefined, deleting from queue...', jsonData)
+        log.info(
+          'Message is empty or undefined, deleting from queue...',
+          jsonData
+        )
         context.delivery.accept()
       }
     } else {
-      log.error(`An unexpected content type was received: ${context.message.body.typecode}`)
-      context.delivery.modified({ deliveryFailed: true, undeliverable_here: false })
+      log.error(
+        `An unexpected content type was received: ${
+          context.message.body.typecode
+        }`
+      )
+      context.delivery.modified({
+        deliveryFailed: true,
+        undeliverable_here: false
+      })
     }
   } catch (err) {
     log.error(`An unhandled exception occured in onMessage: ${err}`)

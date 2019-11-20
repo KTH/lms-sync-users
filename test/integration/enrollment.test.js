@@ -67,7 +67,7 @@ test('should enroll an assistant in an existing course in canvas', async t => {
 test('should enroll an employee in Miljöutbildningen and Canvas at KTH', async t => {
   t.plan(2)
   const muId = 17839 // Miljöutbildningen
-  const ckId = 85 // Canvas at KTH
+  const ckId = 1 // Canvas at KTH
 
   // Create the "employee" in Canvas
   const employeeId = await createUser()
@@ -81,8 +81,12 @@ test('should enroll an employee in Miljöutbildningen and Canvas at KTH', async 
   const [{ resp }] = await handleMessages(message)
   await canvasApi.pollUntilSisComplete(resp.id)
 
-  const muEnrollments = await canvasApi.get(`courses/${muId}/enrollments?sis_section_id[]=app.katalog3.A.section1`)
-  const ckEnrollments = await canvasApi.get(`courses/${ckId}/enrollments?sis_section_id[]=app.katalog3.A.section2`)
+  const muEnrollments = await canvasApi.get(
+    `courses/${muId}/enrollments?sis_section_id[]=app.katalog3.A.section1`
+  )
+  const ckEnrollments = await canvasApi.get(
+    `courses/${ckId}/enrollments?sis_section_id[]=app.katalog3.A.section2`
+  )
 
   t.ok(
     muEnrollments.find(e => e.user.sis_user_id === employeeId),

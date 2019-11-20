@@ -7,19 +7,19 @@ function parseKeyTeacher (key) {
   let termin = null
   let year = null
   let ladok = null
-  let courseIn = 2
-  let terminIn = 5
-  let yearIn = 4
-  let ladokIn = 6
+  const courseIn = 2
+  const terminIn = 5
+  const yearIn = 4
+  const ladokIn = 6
 
-  let myRe = /^edu.courses.(\w+).(\w+).(\d\d)(\d\d)(\d).(\d).(\w+)$/g
-  let myArray = myRe.exec(key)
+  const myRe = /^edu.courses.(\w+).(\w+).(\d\d)(\d\d)(\d).(\d).(\w+)$/g
+  const myArray = myRe.exec(key)
   if (myArray != null) {
     course = myArray[courseIn]
     termin = myArray[terminIn] === '1' ? 'VT' : 'HT'
     year = myArray[yearIn]
     ladok = myArray[ladokIn]
-    let sisCourseCode = course + termin + year + ladok
+    const sisCourseCode = course + termin + year + ladok
     return sisCourseCode
   }
 }
@@ -30,19 +30,19 @@ function parseKeyStudent (key) {
   let termin = null
   let year = null
   let ladok = null
-  let myRe = /^(\w+).(\w+).(\w+).(\w+).(\w+)_(\d\d)(\d\d)(\d).(\d+)/g
-  let myArray = myRe.exec(key)
+  const myRe = /^(\w+).(\w+).(\w+).(\w+).(\w+)_(\d\d)(\d\d)(\d).(\d+)/g
+  const myArray = myRe.exec(key)
   if (myArray != null) {
-    let courseInOne = 3
-    let courseInTwo = 4
-    let terminIn = 8
-    let yearIn = 7
-    let ladokIn = 9
+    const courseInOne = 3
+    const courseInTwo = 4
+    const terminIn = 8
+    const yearIn = 7
+    const ladokIn = 9
     course = myArray[courseInOne] + myArray[courseInTwo]
     termin = myArray[terminIn] === '1' ? 'VT' : 'HT'
     year = myArray[yearIn]
     ladok = myArray[ladokIn]
-    let sisCourseCode = course + termin + year + ladok
+    const sisCourseCode = course + termin + year + ladok
     return sisCourseCode
   }
 }

@@ -19,12 +19,14 @@ test('should init the logger when a message without body is passed', t => {
 
   initLogger(message, messageId)
 
-  t.ok(log.init.calledWith({
-    kthid: undefined,
-    ug1Name: undefined,
-    ugversion: 123,
-    messageId: 'abc'
-  }))
+  t.ok(
+    log.init.calledWith({
+      kthid: undefined,
+      ug1Name: undefined,
+      ugversion: 123,
+      messageId: 'abc'
+    })
+  )
 })
 
 test('should init the logger when a message without a body is passed', t => {
@@ -40,12 +42,14 @@ test('should init the logger when a message without a body is passed', t => {
 
   initLogger(message, messageId)
 
-  t.ok(log.init.calledWith({
-    kthid: undefined,
-    ug1Name: undefined,
-    ugversion: 123,
-    messageId: 'abc'
-  }))
+  t.ok(
+    log.init.calledWith({
+      kthid: undefined,
+      ug1Name: undefined,
+      ugversion: 123,
+      messageId: 'abc'
+    })
+  )
 })
 
 test('should init the logger when a message with a body, without kthid or ug1name is passed', t => {
@@ -62,12 +66,14 @@ test('should init the logger when a message with a body, without kthid or ug1nam
 
   initLogger(message, messageId)
 
-  t.ok(log.init.calledWith({
-    kthid: undefined,
-    ug1Name: undefined,
-    ugversion: 123,
-    messageId: 'abc'
-  }))
+  t.ok(
+    log.init.calledWith({
+      kthid: undefined,
+      ug1Name: undefined,
+      ugversion: 123,
+      messageId: 'abc'
+    })
+  )
 })
 
 test('should init the logger when a message with a body, with kthid and ug1name is passed', t => {
@@ -84,12 +90,14 @@ test('should init the logger when a message with a body, with kthid and ug1name 
 
   initLogger(message, messageId)
 
-  t.ok(log.init.calledWith({
-    kthid: 'someKthid',
-    ug1Name: 'someUg1Name',
-    ugversion: 123,
-    messageId: 'abc'
-  }))
+  t.ok(
+    log.init.calledWith({
+      kthid: 'someKthid',
+      ug1Name: 'someUg1Name',
+      ugversion: 123,
+      messageId: 'abc'
+    })
+  )
 })
 
 test('should init the logger without any message settings when null message is passed', t => {

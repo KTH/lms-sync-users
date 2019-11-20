@@ -10,14 +10,14 @@ test('should create a new user in canvas', t => {
   const username = `${kthid}_abc`
   const message = {
     kthid,
-    'ugClass': 'user',
-    'deleted': false,
-    'affiliation': ['student'],
+    ugClass: 'user',
+    deleted: false,
+    affiliation: ['student'],
     username,
-    'family_name': 'Stenberg',
-    'given_name': 'Emil Stenberg',
-    'primary_email': 'esandin@gmail.com',
-    'ladok3_student_uid': ladokId
+    family_name: 'Stenberg',
+    given_name: 'Emil Stenberg',
+    primary_email: 'esandin@gmail.com',
+    ladok3_student_uid: ladokId
   }
 
   handleMessages(message)
@@ -31,13 +31,13 @@ test('should create a new user in canvas even without ladokId', t => {
   const username = `${kthid}_abc`
   const message = {
     kthid,
-    'ugClass': 'user',
-    'deleted': false,
-    'affiliation': ['student'],
+    ugClass: 'user',
+    deleted: false,
+    affiliation: ['student'],
     username,
-    'family_name': 'Stenberg',
-    'given_name': 'Emil Stenberg',
-    'primary_email': 'esandin@gmail.com'
+    family_name: 'Stenberg',
+    given_name: 'Emil Stenberg',
+    primary_email: 'esandin@gmail.com'
   }
 
   handleMessages(message)
@@ -52,14 +52,14 @@ test('should create a new user of affiliation:member in canvas', t => {
   const ladokId = randomstring.generate(24)
   const message = {
     kthid,
-    'ugClass': 'user',
-    'deleted': false,
-    'affiliation': ['member'],
+    ugClass: 'user',
+    deleted: false,
+    affiliation: ['member'],
     username,
-    'family_name': 'Stenberg',
-    'given_name': 'Emil Stenberg',
-    'primary_email': 'esandin@gmail.com',
-    'ladok3_student_uid': ladokId
+    family_name: 'Stenberg',
+    given_name: 'Emil Stenberg',
+    primary_email: 'esandin@gmail.com',
+    ladok3_student_uid: ladokId
   }
 
   handleMessages(message)
@@ -75,32 +75,35 @@ test('should update a user in canvas', t => {
 
   const message = {
     kthid,
-    'ugClass': 'user',
-    'deleted': false,
-    'affiliation': ['student'],
+    ugClass: 'user',
+    deleted: false,
+    affiliation: ['student'],
     username,
-    'family_name': 'Stenberg',
-    'given_name': 'Emil Stenberg',
-    'primary_email': 'esandin@gmail.com',
-    'ladok3_student_uid': ladokId
+    family_name: 'Stenberg',
+    given_name: 'Emil Stenberg',
+    primary_email: 'esandin@gmail.com',
+    ladok3_student_uid: ladokId
   }
 
   const message2 = {
     kthid,
-    'ugClass': 'user',
-    'deleted': false,
-    'affiliation': ['student'],
+    ugClass: 'user',
+    deleted: false,
+    affiliation: ['student'],
     username,
-    'family_name': 'Stenberg',
-    'given_name': 'Emil Stenberg Uppdaterad',
-    'primary_email': 'esandin@gmail.com',
-    'ladok3_student_uid': ladokId
+    family_name: 'Stenberg',
+    given_name: 'Emil Stenberg Uppdaterad',
+    primary_email: 'esandin@gmail.com',
+    ladok3_student_uid: ladokId
   }
 
   handleMessages(message, message2)
     .then(() => canvasApi.getUser(kthid))
-    .then(user => t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
-    t.equal(user.integration_id, ''))
+    .then(
+      user =>
+        t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
+        t.equal(user.integration_id, '')
+    )
 })
 
 test('should update a user in canvas even if Ladok ID is not supplied', t => {
@@ -111,28 +114,32 @@ test('should update a user in canvas even if Ladok ID is not supplied', t => {
 
   const message = {
     kthid,
-    'ugClass': 'user',
-    'deleted': false,
-    'affiliation': ['student'],
+    ugClass: 'user',
+    deleted: false,
+    affiliation: ['student'],
     username,
-    'family_name': 'Stenberg',
-    'given_name': 'Emil Stenberg',
-    'primary_email': 'esandin@gmail.com',
-    'ladok3_student_uid': ladokId
+    family_name: 'Stenberg',
+    given_name: 'Emil Stenberg',
+    primary_email: 'esandin@gmail.com',
+    ladok3_student_uid: ladokId
   }
 
   const message2 = {
     kthid,
-    'ugClass': 'user',
-    'deleted': false,
-    'affiliation': ['student'],
+    ugClass: 'user',
+    deleted: false,
+    affiliation: ['student'],
     username,
-    'family_name': 'Stenberg',
-    'given_name': 'Emil Stenberg Uppdaterad',
-    'primary_email': 'esandin@gmail.com' }
+    family_name: 'Stenberg',
+    given_name: 'Emil Stenberg Uppdaterad',
+    primary_email: 'esandin@gmail.com'
+  }
 
   handleMessages(message, message2)
     .then(() => canvasApi.getUser(kthid))
-    .then(user => t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
-    t.equal(user.integration_id, ''))
+    .then(
+      user =>
+        t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
+        t.equal(user.integration_id, '')
+    )
 })
