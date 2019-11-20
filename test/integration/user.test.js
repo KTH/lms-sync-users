@@ -99,8 +99,11 @@ test('should update a user in canvas', t => {
 
   handleMessages(message, message2)
     .then(() => canvasApi.getUser(kthid))
-    .then(user => t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
-    t.equal(user.integration_id, ''))
+    .then(
+      user =>
+        t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
+        t.equal(user.integration_id, '')
+    )
 })
 
 test('should update a user in canvas even if Ladok ID is not supplied', t => {
@@ -134,6 +137,9 @@ test('should update a user in canvas even if Ladok ID is not supplied', t => {
 
   handleMessages(message, message2)
     .then(() => canvasApi.getUser(kthid))
-    .then(user => t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
-    t.equal(user.integration_id, ''))
+    .then(
+      user =>
+        t.equal(user.short_name, 'Emil Stenberg Uppdaterad Stenberg') &&
+        t.equal(user.integration_id, '')
+    )
 })

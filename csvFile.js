@@ -27,5 +27,7 @@ function createLine (strArr) {
 }
 
 module.exports = {
-  escapeCsvData, writeLine, createLine
+  escapeCsvData,
+  writeLine,
+  createLine
 }

@@ -15,21 +15,18 @@ function createSBService (queueConnectionString) {
   sBService.logger = new azureCommon.Logger(azureCommon.Logger.LogLevels.TRACE)
 
   return {
-
-    deleteTopic: Promise.promisify(
-      sBService.deleteTopic,
-      { context: sBService }
-    ),
+    deleteTopic: Promise.promisify(sBService.deleteTopic, {
+      context: sBService
+    }),
 
     createTopicIfNotExists: Promise.promisify(
       sBService.createTopicIfNotExists,
       { context: sBService }
     ),
 
-    createSubscription: Promise.promisify(
-      sBService.createSubscription,
-      { context: sBService }
-    ),
+    createSubscription: Promise.promisify(sBService.createSubscription, {
+      context: sBService
+    }),
 
     sendTopicMessage (topicName, message) {
       if (typeof message === 'object') {
@@ -39,7 +36,7 @@ function createSBService (queueConnectionString) {
       const topicMessage = { body: message }
 
       return new Promise((resolve, reject) => {
-        sBService.sendTopicMessage(topicName, topicMessage, (err) => {
+        sBService.sendTopicMessage(topicName, topicMessage, err => {
           if (err) {
             reject(err)
           } else {
@@ -51,7 +48,9 @@ function createSBService (queueConnectionString) {
   }
 }
 
-const sBConnectionString = `Endpoint=sb://lms-queue.servicebus.windows.net/;SharedAccessKeyName=${process.env.AZURE_SHARED_ACCESS_KEY_NAME};SharedAccessKey=${process.env.AZURE_SHARED_ACCESS_KEY}`
+const sBConnectionString = `Endpoint=sb://lms-queue.servicebus.windows.net/;SharedAccessKeyName=${
+  process.env.AZURE_SHARED_ACCESS_KEY_NAME
+};SharedAccessKey=${process.env.AZURE_SHARED_ACCESS_KEY}`
 const sBService = createSBService(sBConnectionString)
 let topicName = ''
 
@@ -65,7 +64,9 @@ function sendAndWaitUntilMessageProcessed (message) {
   })
 
   console.log('sending a message to the topic:', topicName)
-  sBService.sendTopicMessage(topicName, message).catch(err => console.error(err))
+  sBService
+    .sendTopicMessage(topicName, message)
+    .catch(err => console.error(err))
 
   return resultPromise
 }
@@ -75,14 +76,22 @@ async function handleMessages (...messages) {
     console.log('handle messages', messages.length)
     process.env.AZURE_SERVICE_BUS_URL = serviceBusUrl
     topicName = `${topicNamePrefix}${crypto.randomBytes(8).toString('hex')}`
-    process.env.AZURE_SUBSCRIPTION_NAME = `${subscriptionNamePrefix}${crypto.randomBytes(8).toString('hex')}`
+    process.env.AZURE_SUBSCRIPTION_NAME = `${subscriptionNamePrefix}${crypto
+      .randomBytes(8)
+      .toString('hex')}`
     process.env.AZURE_SUBSCRIPTION_PATH = `${topicName}/Subscriptions`
     await sBService.createTopicIfNotExists(topicName)
-    await sBService.createSubscription(topicName, process.env.AZURE_SUBSCRIPTION_NAME)
+    await sBService.createSubscription(
+      topicName,
+      process.env.AZURE_SUBSCRIPTION_NAME
+    )
 
     await consumeMessages.start(false)
 
-    const result = await Promise.mapSeries(messages, sendAndWaitUntilMessageProcessed)
+    const result = await Promise.mapSeries(
+      messages,
+      sendAndWaitUntilMessageProcessed
+    )
     consumeMessages.__get__('connection').close()
 
     return result

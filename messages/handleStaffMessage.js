@@ -19,7 +19,10 @@ async function handleStaffMessage (msg) {
     const sisSectionId = `${msg.ug1Name}.section${i}`
     for (const member of msg.member) {
       const canvasRole = CanvasRole[msg._desc.userType]
-      await writeLine([sisSectionId, member, canvasRole.role_id, 'active'], fileName)
+      await writeLine(
+        [sisSectionId, member, canvasRole.role_id, 'active'],
+        fileName
+      )
     }
   }
   const canvasReturnValue = await canvasApi.sendCsvFile(fileName, true)
