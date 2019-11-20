@@ -46,8 +46,7 @@ async function checkCanvasStatus () {
 
 async function checkCanvasKey () {
   try {
-    
-  return await canvasApi.getRootAccount()
+    return await canvasApi.getRootAccount()
   } catch (e) {
     log.error('Could not use canvas api.')
     return false
