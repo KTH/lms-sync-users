@@ -23,7 +23,7 @@ pipeline {
         stage('Original Process') {
             steps {
                 withCredentials([
-                        string(credentialsId: 'CANVAS_API_KEY', variable: 'CANVAS_ADMIN_API_TOKEN'),
+                        string(credentialsId: 'CANVAS_API_KEY', variable: 'CANVAS_API_TOKEN_2'),
                         string(credentialsId: 'CANVAS_API_URL', variable: 'CANVAS_API_URL'),
                         string(credentialsId: 'AZURE_SHARED_ACCESS_KEY', variable: 'AZURE_SHARED_ACCESS_KEY'),
                         string(credentialsId: 'AZURE_SHARED_ACCESS_KEY_NAME', variable: 'AZURE_SHARED_ACCESS_KEY_NAME'),
