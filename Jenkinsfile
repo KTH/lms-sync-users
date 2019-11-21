@@ -12,7 +12,7 @@ pipeline {
                 COMPOSE_PROJECT_NAME = "${env.BUILD_TAG}"
 
                 CANVAS_API_KEY = credentials('CANVAS_API_TOKEN_2')
-                CANVAS_API_URL = 'https://kth.test.instructure.com'
+                CANVAS_API_URL = 'https://kth.test.instructure.com/api/v1'
                 AZURE_SHARED_ACCESS_KEY = credentials('AZURE_SHARED_ACCESS_KEY')
                 AZURE_SHARED_ACCESS_KEY_NAME = credentials('AZURE_SHARED_ACCESS_KEY_NAME')
                 PROXY_PREFIX_PATH = '/app/lms-sync-users'
