@@ -1,5 +1,11 @@
+String cron_string = BRANCH_NAME == "master" ? "@midnight" : ""
+
 pipeline {
     agent any
+
+    triggers {
+        cron(cron_string)
+    }
 
     stages {
         stage('Cleanup') {
