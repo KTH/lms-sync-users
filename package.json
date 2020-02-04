@@ -17,6 +17,7 @@
     "test-integration-in-docker": "ID=$(docker build -q .) && LOCAL_IMAGE_ID=$ID docker-compose -f docker-compose-integration-tests.yml up --abort-on-container-exit --always-recreate-deps"
   },
   "dependencies": {
+    "@kth/reqvars": "^2.0.1",
     "bluebird": "^3.7.1",
     "bunyan": "^1.8.12",
     "dotenv": "^6.2.0",
