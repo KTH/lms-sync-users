@@ -1,4 +1,5 @@
 require('dotenv').config()
+require('@kth/reqvars').check()
 const consumeMessages = require('./messages/consumeMessages')
 const app = require('kth-node-server')
 const systemRoutes = require('./server/systemroutes')
