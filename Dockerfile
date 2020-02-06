@@ -7,6 +7,7 @@ COPY ["package-lock.json", "/lms-sync-users/package-lock.json"]
 RUN npm ci --production
 
 # Source files in root
+COPY [".env.in", ".env.in"]
 COPY ["app.js", "/lms-sync-users/app.js"]
 COPY ["canvasApi.js", "/lms-sync-users/canvasApi.js"]
 COPY ["csvFile.js", "/lms-sync-users/csvFile.js"]
