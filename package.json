@@ -35,7 +35,7 @@
     "blue-tape": "^1.0.0",
     "cross-env": "^5.2.1",
     "istanbul": "^0.4.5",
-    "nodemon": "^1.19.4",
+    "nodemon": "^2.0.3",
     "prettier-standard": "^15.0.1",
     "proxyquire": "^2.1.3",
     "randomstring": "^1.1.5",
@@ -43,6 +43,6 @@
     "rewire-global": "^1.0.11",
     "sinon": "^5.1.1",
     "tap-spec": "^5.0.0",
-    "tape": "^4.11.0"
+    "tape": "^4.13.2"
   }
 }
