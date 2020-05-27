@@ -9,8 +9,8 @@ services:
     tty: true
     command: >
       sh -c "apk add openssl &&
-             npm install &&
-             npm test:integration"
+             npm ci &&
+             npm run test:integration"
     environment:
       - PROXY_PREFIX_PATH
       - CSV_DIR
