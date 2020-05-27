@@ -9,11 +9,9 @@
     "coverage": "cross-env NODE_ENV=development istanbul cover tape -- \"messages/*.js\" -- \"server/**/*.js\" -- \"test/**/*.js\"",
     "format": "prettier-standard \"**/*.{js,md,yml,json}\"",
     "test": "prettier-standard --lint --check \"**/*.{js,md,yml,json}\" && cross-env NODE_ENV=test tape \"test/unit/**/*.js\" | tap-spec",
-    "test:docker-unit": "apk update; apk add python make; npm install --no-optional; npm test",
     "test:docker-integration": "apk update; apk add python make; npm install --no-optional; npm run test:integration",
     "start": "cross-env NODE_ENV=development nodemon app.js",
     "debug": "NODE_ENV=development node --nolazy --inspect-brk=9229 app.js | bunyan -o short",
-    "test-unit-in-docker": "ID=$(docker build -q .) && LOCAL_IMAGE_ID=$ID docker-compose -f docker-compose-unit-tests.yml up --abort-on-container-exit --always-recreate-deps",
     "test-integration-in-docker": "ID=$(docker build -q .) && LOCAL_IMAGE_ID=$ID docker-compose -f docker-compose-integration-tests.yml up --abort-on-container-exit --always-recreate-deps"
   },
   "dependencies": {
