@@ -6,11 +6,11 @@ services:
   integration_tests:
     build: .
     image: $LOCAL_IMAGE_ID
-    volumes:
-      - ./test:/lms-sync-users/test
-      - ./node_modules:/lms-sync-users/node_modules
     tty: true
-    command: npm run test:docker-integration
+    command: >
+      sh -c "apk add openssl &&
+             npm ci &&
+             npm run test:integration"
     environment:
       - PROXY_PREFIX_PATH
       - CSV_DIR
