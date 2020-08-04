@@ -82,10 +82,12 @@ test('should enroll an employee in Miljöutbildningen and Canvas at KTH', async 
   await canvasApi.pollUntilSisComplete(resp.id)
 
   const muEnrollments = await canvasApi.getSectionEnrollments(
-    muId, 'app.katalog3.A.section1'
+    muId,
+    'app.katalog3.A.section1'
   )
   const ckEnrollments = await canvasApi.getSectionEnrollments(
-    ckId, 'app.katalog3.A.section2'
+    ckId,
+    'app.katalog3.A.section2'
   )
 
   t.ok(

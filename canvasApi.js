@@ -10,7 +10,10 @@ const canvasApi = CanvasApi(
 
 module.exports = {
   async sendCsvFile (fileName, flag) {
-    const {body} = await canvasApi.sendSis('/accounts/1/sis_imports', fileName)
+    const { body } = await canvasApi.sendSis(
+      '/accounts/1/sis_imports',
+      fileName
+    )
     return body
   },
   async getUser (sisUserId) {
@@ -31,7 +34,11 @@ module.exports = {
     return canvasApi.requestUrl('/accounts/1/users', 'POST', data)
   },
   async createCourse (data, accountId) {
-    const { body } = await canvasApi.requestUrl(`/accounts/${accountId}/courses`, 'POST', data)
+    const { body } = await canvasApi.requestUrl(
+      `/accounts/${accountId}/courses`,
+      'POST',
+      data
+    )
     return body
   },
   createDefaultSection (course) {
@@ -43,43 +50,48 @@ module.exports = {
       }
     }
 
-    return canvasApi.requestUrl(`/courses/${course.id}/sections`, 'POST', courseSection)
+    return canvasApi.requestUrl(
+      `/courses/${course.id}/sections`,
+      'POST',
+      courseSection
+    )
   },
-  async pollUntilSisComplete(sisImportId, wait = 100) {
+  async pollUntilSisComplete (sisImportId, wait = 100) {
     console.log('............', sisImportId)
     return new Promise((resolve, reject) => {
-      canvasApi.get(`/accounts/1/sis_imports/${sisImportId}`)
-        .then(result => {
-          logger.info('progress:', result.body.progress)
-          if (result.body.progress === 100) {
+      canvasApi.get(`/accounts/1/sis_imports/${sisImportId}`).then(result => {
+        logger.info('progress:', result.body.progress)
+        if (result.body.progress === 100) {
           // csv complete
-            resolve(result.body)
-          } else {
-            logger.info(`not yet complete, try again in ${wait / 1000} seconds`)
-            // Not complete, wait and try again
-            setTimeout(() => {
-              return this.pollUntilSisComplete(sisImportId, wait * 2)
-                .then(result => resolve(result))
-            }, wait)
-          }
-        })
+          resolve(result.body)
+        } else {
+          logger.info(`not yet complete, try again in ${wait / 1000} seconds`)
+          // Not complete, wait and try again
+          setTimeout(() => {
+            return this.pollUntilSisComplete(sisImportId, wait * 2).then(
+              result => resolve(result)
+            )
+          }, wait)
+        }
+      })
     })
   },
 
   async getEnrollments (courseId) {
-    const enrollments = canvasApi.list(`/courses/${courseId}/enrollments`).toArray()
+    const enrollments = canvasApi
+      .list(`/courses/${courseId}/enrollments`)
+      .toArray()
 
     return enrollments
   },
 
   async getSectionEnrollments (courseId, sisSectionId) {
     console.log('>>>>>', courseId, sisSectionId)
-    const enrollments = await canvasApi.list(
-      `courses/${courseId}/enrollments`,
-      {
+    const enrollments = await canvasApi
+      .list(`courses/${courseId}/enrollments`, {
         sis_section_id: sisSectionId
-      }
-    ).toArray()
+      })
+      .toArray()
 
     return enrollments
   }
