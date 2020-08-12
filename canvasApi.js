@@ -101,7 +101,7 @@ module.exports = {
       const account = await canvasApi.get('/accounts/1')
 
       return account.name === 'KTH Royal Institute of Technology'
-    } catch(err) {
+    } catch (err) {
       logger.error(err, 'Error when getting the root account')
       return false
     }
