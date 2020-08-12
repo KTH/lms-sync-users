@@ -98,9 +98,9 @@ module.exports = {
   // This function is used in `server/systemroutes` (a.k.a. the monitor page)
   async getRootAccount () {
     try {
-      const account = await canvasApi.get('/accounts/1')
+      const { body } = await canvasApi.get('/accounts/1')
 
-      return account.name === 'KTH Royal Institute of Technology'
+      return body.name === 'KTH Royal Institute of Technology'
     } catch (err) {
       logger.error(err, 'Error when getting the root account')
       return false
