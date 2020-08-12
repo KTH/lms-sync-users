@@ -86,7 +86,6 @@ module.exports = {
   },
 
   async getSectionEnrollments (courseId, sisSectionId) {
-    console.log('>>>>>', courseId, sisSectionId)
     const enrollments = await canvasApi
       .list(`courses/${courseId}/enrollments`, {
         sis_section_id: sisSectionId
@@ -94,5 +93,17 @@ module.exports = {
       .toArray()
 
     return enrollments
+  },
+
+  // This function is used in `server/systemroutes` (a.k.a. the monitor page)
+  async getRootAccount () {
+    try {
+      const account = await canvasApi.get('/accounts/1')
+
+      return account.name === 'KTH Royal Institute of Technology'
+    } catch(err) {
+      logger.error(err, 'Error when getting the root account')
+      return false
+    }
   }
 }
