@@ -14,6 +14,11 @@ module.exports = {
       '/accounts/1/sis_imports',
       fileName
     )
+    logger.info(
+      `SIS Import created: ${
+        process.env.CANVAS_API_URL
+      }/accounts/1/sis_imports/${body.id}`
+    )
     return body
   },
   async getUser (sisUserId) {
