@@ -143,6 +143,28 @@ test('should enroll a student in an existing course', async t => {
   t.equal(enrollments[0].sis_user_id, studentId)
 })
 
+test.only('should enroll TA:s for an f-course', async t => {
+  t.plan(1)
+
+  const message = {
+    kthid: 'u219zuii',
+    ug1Name: 'edu.courses.FE.FEP3370.20202.1.assistants',
+    member: [
+      'u10uualc',
+      'u14np19x',
+      'u1b2g8nt',
+      'u1pi9xnd',
+      'u1tpzpzx',
+      'u1vodbq8',
+      'u1y14qfh'
+    ]
+  }
+
+  const [{ resp }] = await handleMessages(message)
+  console.log('::::::::::::::::', resp)
+  t.ok(1)
+})
+
 test('should not enroll an antagen', async t => {
   t.plan(1)
   const cc0 = 'A' + randomstring.generate(1)
