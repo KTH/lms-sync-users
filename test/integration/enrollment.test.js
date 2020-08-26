@@ -125,7 +125,7 @@ test('should NOT enroll a re-registered student in an existing course in Canvas'
 test('should enroll a student in an existing course', async t => {
   t.plan(1)
   const cc0 = 'A' + randomstring.generate(1)
-  const cc1 = randomstring.generate(6)
+  const cc1 = randomstring.generate(4)
 
   const canvasCourse = await createCourse(cc0 + cc1 + 'VT171')
   const studentId = await createUser()
@@ -143,28 +143,28 @@ test('should enroll a student in an existing course', async t => {
   t.equal(enrollments[0].sis_user_id, studentId)
 })
 
-// test('should enroll TA:s for an f-course', async t => {
-//   t.plan(2)
-//
-//   const cc0 = 'A' + randomstring.generate(1)
-//   const cc1 = randomstring.generate(4)
-//
-//   const canvasCourse = await createCourse(cc0 + cc1 + 'VT171')
-//   const assistantId = await createUser()
-//
-//   const message = {
-//     kthid: 'u219zuii',
-//     ug1Name: `edu.courses.${cc0}.${cc1}.20171.1.assistants`,
-//     member: [assistantId]
-//   }
-//
-//   const [{ resp }] = await handleMessages(message)
-//   t.ok(resp)
-//   await canvasApi.pollUntilSisComplete(resp.id)
-//
-//   const enrollments = await canvasApi.getEnrollments(canvasCourse.id)
-//   t.equal(enrollments[0].sis_user_id, assistantId)
-// })
+test.skip('should enroll TA:s for an f-course', async t => {
+  t.plan(2)
+
+  const cc0 = 'A' + randomstring.generate(1)
+  const cc1 = randomstring.generate(4)
+
+  const canvasCourse = await createCourse(cc0 + cc1 + 'VT171')
+  const assistantId = await createUser()
+
+  const message = {
+    kthid: 'u219zuii',
+    ug1Name: `edu.courses.${cc0}.${cc1}.20171.1.assistants`,
+    member: [assistantId]
+  }
+
+  const [{ resp }] = await handleMessages(message)
+  t.ok(resp)
+  await canvasApi.pollUntilSisComplete(resp.id)
+
+  const enrollments = await canvasApi.getEnrollments(canvasCourse.id)
+  t.equal(enrollments[0].sis_user_id, assistantId)
+})
 
 test('should not enroll an antagen', async t => {
   t.plan(1)
