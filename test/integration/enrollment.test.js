@@ -143,7 +143,7 @@ test('should enroll a student in an existing course', async t => {
   t.equal(enrollments[0].sis_user_id, studentId)
 })
 
-test.skip('should enroll TA:s for an f-course', async t => {
+test.only('should enroll TA:s for an f-course', async t => {
   t.plan(2)
 
   const cc0 = 'A' + randomstring.generate(1)
