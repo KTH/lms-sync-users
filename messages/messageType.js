@@ -63,13 +63,13 @@ module.exports = {
     }
 
     const isTeacherRegExp = /edu\.courses\.\w{2,3}\.\w{6}\.\d{5}\.\d\.\bteachers\b/
-    const isAssistantsRegExp = /edu\.courses\.\w{2,3}\.\w{6}\.\d{5}\.\d\.\bassistants\b/
+    const isAssistantsRegExp = /edu\.courses\.\w{2,3}\.\w{6,8}\.\d{5}\.\d\.\bassistants\b/
     const isCourseResponsibleRegExp = /edu\.courses\.\w{2,3}\.\w{6}\.\d{5}\.\d\.\bcourseresponsible\b/
     const isStudentsRegExp = /ladok2\.kurser.\w{2,3}\.\w{4}.registrerade_\d{5}\.\d/
     const isOmregRegexp = /ladok2\.kurser.\w{2,3}\.\w{4}.omregistrerade_\d{5}/
     const isAntagnaRegexp = /ladok2\.kurser.\w{2,3}\.\w{4}.antagna_\d{5}.\d/
     const isStaff = /app\.katalog3.\w/
-
+  
     if (result.ug1Name.match(isTeacherRegExp)) {
       result._desc = {
         type: Type.COURSE,

@@ -143,19 +143,20 @@ test('should enroll a student in an existing course', async t => {
   t.equal(enrollments[0].sis_user_id, studentId)
 })
 
-test.only('should enroll TA:s for an f-course', async t => {
+test('should enroll TA:s for an f-course', async t => {
   t.plan(2)
 
   // Course code is for example "FE" "A1234"
   const cc0 = 'F' + randomstring.generate(2)
   const cc1 = randomstring.generate(5)
+  const courseCode = cc0 + cc1;
 
-  const canvasCourse = await createCourse(cc0 + cc1 + 'VT171')
+  const canvasCourse = await createCourse(courseCode + 'VT171')
   const assistantId = await createUser()
 
   const message = {
     kthid: 'u219zuii',
-    ug1Name: `edu.courses.${cc0}.${cc0 + cc1}.20171.1.assistants`,
+    ug1Name: `edu.courses.${cc0}.${courseCode}.20171.1.assistants`,
     member: [assistantId]
   }
 
