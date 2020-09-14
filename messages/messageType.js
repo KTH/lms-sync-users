@@ -69,7 +69,7 @@ module.exports = {
     const isOmregRegexp = /ladok2\.kurser.\w{2,3}\.\w{4}.omregistrerade_\d{5}/
     const isAntagnaRegexp = /ladok2\.kurser.\w{2,3}\.\w{4}.antagna_\d{5}.\d/
     const isStaff = /app\.katalog3.\w/
-  
+
     if (result.ug1Name.match(isTeacherRegExp)) {
       result._desc = {
         type: Type.COURSE,
