@@ -63,7 +63,7 @@ module.exports = {
     }
 
     const isTeacherRegExp = /edu\.courses\.\w{2,3}\.\w{6}\.\d{5}\.\d\.\bteachers\b/
-    const isAssistantsRegExp = /edu\.courses\.\w{2,3}\.\w{6,8}\.\d{5}\.\d\.\bassistants\b/
+    const isAssistantsRegExp = /edu\.courses\.\w{2,3}\.\w{6,7}\.\d{5}\.\d\.\bassistants\b/
     const isCourseResponsibleRegExp = /edu\.courses\.\w{2,3}\.\w{6}\.\d{5}\.\d\.\bcourseresponsible\b/
     const isStudentsRegExp = /ladok2\.kurser.\w{2,3}\.\w{4}.registrerade_\d{5}\.\d/
     const isOmregRegexp = /ladok2\.kurser.\w{2,3}\.\w{4}.omregistrerade_\d{5}/

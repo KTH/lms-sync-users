@@ -148,7 +148,7 @@ test('should enroll TA:s for an f-course', async t => {
 
   // Course code is for example "FE" "A1234"
   const cc0 = 'F' + randomstring.generate(2)
-  const cc1 = randomstring.generate(5)
+  const cc1 = randomstring.generate(4)
   const courseCode = cc0 + cc1
 
   const canvasCourse = await createCourse(courseCode + 'VT171')
