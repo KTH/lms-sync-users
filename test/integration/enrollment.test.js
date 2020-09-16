@@ -143,6 +143,31 @@ test('should enroll a student in an existing course', async t => {
   t.equal(enrollments[0].sis_user_id, studentId)
 })
 
+test('should enroll TA:s for an f-course', async t => {
+  t.plan(2)
+
+  // Course code is for example "FE" "A1234"
+  const cc0 = 'F' + randomstring.generate(2)
+  const cc1 = randomstring.generate(4)
+  const courseCode = cc0 + cc1
+
+  const canvasCourse = await createCourse(courseCode + 'VT171')
+  const assistantId = await createUser()
+
+  const message = {
+    kthid: 'u219zuii',
+    ug1Name: `edu.courses.${cc0}.${courseCode}.20171.1.assistants`,
+    member: [assistantId]
+  }
+
+  const [{ resp }] = await handleMessages(message)
+  t.ok(resp)
+  await canvasApi.pollUntilSisComplete(resp.id)
+
+  const enrollments = await canvasApi.getEnrollments(canvasCourse.id)
+  t.equal(enrollments[0].sis_user_id, assistantId)
+})
+
 test('should not enroll an antagen', async t => {
   t.plan(1)
   const cc0 = 'A' + randomstring.generate(1)
