@@ -3,17 +3,17 @@ const CanvasApi = require('@kth/canvas-api')
 
 logger.info('using canvas api at:', process.env.CANVAS_API_URL)
 
-const canvasApi = CanvasApi(
+const canvasApi = new CanvasApi(
   process.env.CANVAS_API_URL,
-  process.env.CANVAS_API_KEY
+  process.env.CANVAS_API_KEY,
+  {
+    timeout: 10 * 1000 // 10 seconds
+  }
 )
 
 module.exports = {
   async sendCsvFile (fileName, flag) {
-    const { body } = await canvasApi.sendSis(
-      '/accounts/1/sis_imports',
-      fileName
-    )
+    const { body } = await canvasApi.sendSis('accounts/1/sis_imports', fileName)
     logger.info(
       `SIS Import created: ${
         process.env.CANVAS_API_URL
@@ -22,7 +22,7 @@ module.exports = {
     return body
   },
   async getUser (sisUserId) {
-    const { body } = await canvasApi.get(`/users/sis_user_id:${sisUserId}`)
+    const { body } = await canvasApi.get(`users/sis_user_id:${sisUserId}`)
     return body
   },
   async get (endpoint) {
@@ -30,17 +30,17 @@ module.exports = {
     return body
   },
   updateUser (data, id) {
-    return canvasApi.requestUrl(`/users/${id}`, 'PUT', data)
+    return canvasApi.requestUrl(`users/${id}`, 'PUT', data)
   },
   requestCanvas (url, method, body) {
     return canvasApi.requestUrl(url, method, body)
   },
   createUser (data) {
-    return canvasApi.requestUrl('/accounts/1/users', 'POST', data)
+    return canvasApi.requestUrl('accounts/1/users', 'POST', data)
   },
   async createCourse (data, accountId) {
     const { body } = await canvasApi.requestUrl(
-      `/accounts/${accountId}/courses`,
+      `accounts/${accountId}/courses`,
       'POST',
       data
     )
@@ -56,7 +56,7 @@ module.exports = {
     }
 
     return canvasApi.requestUrl(
-      `/courses/${course.id}/sections`,
+      `courses/${course.id}/sections`,
       'POST',
       courseSection
     )
@@ -64,7 +64,7 @@ module.exports = {
   async pollUntilSisComplete (sisImportId, wait = 100) {
     console.log('............', sisImportId)
     return new Promise((resolve, reject) => {
-      canvasApi.get(`/accounts/1/sis_imports/${sisImportId}`).then(result => {
+      canvasApi.get(`accounts/1/sis_imports/${sisImportId}`).then(result => {
         logger.info('progress:', result.body.progress)
         if (result.body.progress === 100) {
           // csv complete
@@ -84,7 +84,7 @@ module.exports = {
 
   async getEnrollments (courseId) {
     const enrollments = canvasApi
-      .list(`/courses/${courseId}/enrollments`)
+      .list(`courses/${courseId}/enrollments`)
       .toArray()
 
     return enrollments
@@ -103,7 +103,7 @@ module.exports = {
   // This function is used in `server/systemroutes` (a.k.a. the monitor page)
   async getRootAccount () {
     try {
-      const { body } = await canvasApi.get('/accounts/1')
+      const { body } = await canvasApi.get('accounts/1')
 
       return body.name === 'KTH Royal Institute of Technology'
     } catch (err) {
