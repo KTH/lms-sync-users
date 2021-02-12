@@ -80,7 +80,7 @@ async function createOrUpdate (user) {
     })
     await canvasApi.requestCanvas(`accounts/1/logins/${login.id}`, 'PUT', user)
   } catch (e) {
-    if (e.statusCode === 404) {
+    if (e.response.statusCode === 404) {
       log.info('user doesnt exist in canvas. Create it.', user)
       const res = await canvasApi.createUser(user)
       log.info('Success! User created', res)

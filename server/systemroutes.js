@@ -34,7 +34,7 @@ async function checkCanvasStatus () {
     const { body } = await got(
       'http://nlxv32btr6v7.statuspage.io/api/v2/status.json',
       {
-        json: true
+        responseType: 'json'
       }
     )
     return body.status.indicator === 'none'

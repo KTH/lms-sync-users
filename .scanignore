@@ -1,2 +1,3 @@
 /test/unit/ugParser.test.js
 /test/unit/handleCourseMessage/index.js
+/config/version.js
