@@ -1,6 +1,7 @@
-var test = require("tape");
+const test = require("tape");
 require("rewire-global").enable();
 const handleUserMessage = require("../../../messages/handleUserMessage");
+
 const isInScope = handleUserMessage.__get__("isInScope");
 
 test("affiliation: student should be in scope", (t) => {

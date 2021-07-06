@@ -1,4 +1,5 @@
 const moment = require("moment");
+
 let _idleTimeStart = moment();
 
 module.exports = {

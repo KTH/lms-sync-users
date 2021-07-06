@@ -1,6 +1,7 @@
-const { writeLine } = require("../csvFile");
 const Promise = require("bluebird");
 const fs = require("fs");
+const { writeLine } = require("../csvFile");
+
 const readFile = Promise.promisify(fs.readFile);
 const log = require("../server/logging");
 const { CanvasRole } = require("./messageType");
@@ -11,7 +12,7 @@ module.exports = async function createCsvFile(
   csvDir,
   csvVol
 ) {
-  const userType = msg._desc.userType;
+  const { userType } = msg._desc;
 
   const fileName = `${process.env.CSV_DIR || "/tmp/"}enrollments.${userType}.${
     sisCourseCodes[0]

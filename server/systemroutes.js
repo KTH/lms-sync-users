@@ -4,18 +4,20 @@
 const canvasApi = require("../canvasApi");
 const got = require("got");
 const express = require("express");
+
 const router = express.Router();
-const packageFile = require("../package.json");
 const moment = require("moment");
+const packageFile = require("../package.json");
+
 const [waitAmount, waitUnit] = [10, "hours"];
 const history = require("../messages/history");
-const log = require("../server/logging");
+const log = require("./logging");
 const version = require("../config/version");
 
 /* GET /_about
  * About page
  */
-var _about = function (req, res) {
+const _about = function (req, res) {
   res.setHeader("Content-Type", "text/plain");
   res.send(`
     packageFile.name:${packageFile.name}
@@ -87,7 +89,7 @@ router.get("/_monitor_all", _monitor);
 router.get("/_monitor_core", _monitor);
 router.get("/_about", _about);
 
-router.get("/", function (req, res) {
+router.get("/", (req, res) => {
   res.redirect(`${process.env.PROXY_PREFIX_PATH}/_monitor`);
 });
 

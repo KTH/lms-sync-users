@@ -1,8 +1,8 @@
 const test = require("tape");
-const { handleMessages } = require("./utils");
-const canvasApi = require("../../canvasApi");
 const randomstring = require("randomstring");
 const { promisify } = require("util");
+const { handleMessages } = require("./utils");
+const canvasApi = require("../../canvasApi");
 
 async function createCourse(sisCourseId) {
   const ACCOUNT_ID = 14;

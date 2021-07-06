@@ -1,6 +1,6 @@
+const { promisify } = require("util");
 const { writeLine } = require("../csvFile");
 const canvasApi = require("../canvasApi");
-const { promisify } = require("util");
 const unlink = promisify(require("fs").unlink);
 const logging = require("../server/logging");
 const { CanvasRole } = require("./messageType");

@@ -1,5 +1,5 @@
-const logger = require("./server/logging");
 const CanvasApi = require("@kth/canvas-api");
+const logger = require("./server/logging");
 
 logger.info("using canvas api at:", process.env.CANVAS_API_URL);
 
@@ -73,11 +73,13 @@ module.exports = {
         } else {
           logger.info(`not yet complete, try again in ${wait / 1000} seconds`);
           // Not complete, wait and try again
-          setTimeout(() => {
-            return this.pollUntilSisComplete(sisImportId, wait * 2).then(
-              (result) => resolve(result)
-            );
-          }, wait);
+          setTimeout(
+            () =>
+              this.pollUntilSisComplete(sisImportId, wait * 2).then((result) =>
+                resolve(result)
+              ),
+            wait
+          );
         }
       });
     });

@@ -1,8 +1,9 @@
-var test = require("tape");
+const test = require("tape");
 require("rewire-global").enable();
 const sinon = require("sinon");
 
 const consumeMessages = require("../../../messages/consumeMessages.js");
+
 const initLogger = consumeMessages.__get__("initLogger");
 const log = consumeMessages.__get__("log");
 

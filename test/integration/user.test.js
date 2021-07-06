@@ -1,7 +1,7 @@
-var test = require("tape");
+const test = require("tape");
+const randomstring = require("randomstring");
 const { handleMessages } = require("./utils");
 const canvasApi = require("../../canvasApi");
-const randomstring = require("randomstring");
 
 test("should create a new user in canvas", (t) => {
   t.plan(1);

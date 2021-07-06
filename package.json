@@ -7,7 +7,7 @@
   "scripts": {
     "test:integration": "cross-env NODE_ENV=test tape \"test/integration/*.js\" -r dotenv/config | tap-spec",
     "format": "prettier --write .",
-    "test": "prettier-standard --lint --check \"**/*.{js,md,yml,json}\" && cross-env NODE_ENV=test tape \"test/unit/**/*.js\" | tap-spec",
+    "test": "npm run test:lint && npm run test:format",
     "test:format": "prettier --check .",
     "test:lint": "eslint *.js server test config messages",
     "start": "cross-env NODE_ENV=development nodemon app.js",

@@ -1,4 +1,4 @@
-var test = require("tape");
+const test = require("tape");
 const { UserType } = require("../../../messages/messageType");
 const proxyquire = require("proxyquire");
 require("rewire-global");

@@ -1,5 +1,6 @@
-const log = require("../server/logging");
 const EventEmitter = require("events");
+const log = require("../server/logging");
+
 const eventEmitter = new EventEmitter();
 const history = require("./history");
 const { addDescription } = require("./messageType");
@@ -70,7 +71,7 @@ function initLogger(msg, msgId) {
   return msg && msg.body;
 }
 
-container.on("connection_open", function (context) {
+container.on("connection_open", (context) => {
   log.info("Connection was opened!");
   log.info(
     `opening receiver for subscription: ${process.env.AZURE_SUBSCRIPTION_NAME} @ ${process.env.AZURE_SUBSCRIPTION_PATH}`
@@ -88,7 +89,7 @@ container.on("connection_open", function (context) {
   });
 });
 
-container.on("connection_close", function (context) {
+container.on("connection_close", (context) => {
   log.warn("Connection was closed!");
   if (reconnectClosedConnection) {
     log.info("Attempting to connect to azure once more!");
@@ -96,36 +97,36 @@ container.on("connection_close", function (context) {
   }
 });
 
-container.on("connection_error", function (context) {
+container.on("connection_error", (context) => {
   log.error(`Connection had an error: ${context.connection.get_error()}`);
 });
 
-container.on("disconnected", function (context) {
+container.on("disconnected", (context) => {
   if (context.error) {
     log.error(context.error);
   }
   log.warn("Connection was disconnected!");
 });
 
-container.on("receiver_open", function (context) {
+container.on("receiver_open", (context) => {
   log.info("Receiver was opened.");
   log.debug(`Adding ${CREDIT_INCREMENT} credit(s).`);
   context.receiver.add_credit(CREDIT_INCREMENT);
 });
 
-container.on("receiver_close", function (context) {
+container.on("receiver_close", (context) => {
   log.warn("Receiver was closed!");
   log.warn(context.receiver.remote.detach);
 });
 
-container.on("receiver_error", function (context) {
+container.on("receiver_error", (context) => {
   log.warn("Receiver had an error!");
   if (reconnectClosedConnection) {
     stop();
   }
 });
 
-container.on("message", async function (context) {
+container.on("message", async (context) => {
   let jsonData;
   let result;
   try {

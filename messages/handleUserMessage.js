@@ -4,7 +4,7 @@ const canvasApi = require("../canvasApi");
 const log = require("../server/logging");
 
 function isInScope(msg) {
-  var affArray = msg.affiliation;
+  const affArray = msg.affiliation;
   const result =
     affArray &&
     (affArray.includes("employee") ||
@@ -58,12 +58,11 @@ function convertToCanvasUser(msg) {
       },
     };
     return user;
-  } else {
-    log.info(
-      "\nIncomplete fields to create user in canvas, skipping. Probably,it is missing a name(given_name, family_name) or a username or kth_id.....",
-      msg
-    );
   }
+  log.info(
+    "\nIncomplete fields to create user in canvas, skipping. Probably,it is missing a name(given_name, family_name) or a username or kth_id.....",
+    msg
+  );
 }
 
 async function createOrUpdate(user) {
@@ -75,9 +74,9 @@ async function createOrUpdate(user) {
     const loginsForUser = await canvasApi.get(
       `users/${userFromCanvas.id}/logins`
     );
-    const login = loginsForUser.find((login) => {
-      return login.unique_id === userFromCanvas.login_id;
-    });
+    const login = loginsForUser.find(
+      (login) => login.unique_id === userFromCanvas.login_id
+    );
     await canvasApi.requestCanvas(`accounts/1/logins/${login.id}`, "PUT", user);
   } catch (e) {
     if (e.response.statusCode === 404) {
@@ -85,9 +84,8 @@ async function createOrUpdate(user) {
       const res = await canvasApi.createUser(user);
       log.info("Success! User created", res);
       return res;
-    } else {
-      throw e;
     }
+    throw e;
   }
 }
 

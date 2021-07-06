@@ -47,7 +47,7 @@ module.exports = {
   UserType,
   CanvasRole,
   addDescription(msg) {
-    const result = Object.assign({}, msg);
+    const result = { ...msg };
     if (result.ugClass === "user") {
       result._desc = {
         type: Type.USER,

@@ -1,5 +1,5 @@
-const packageFile = require("../package.json");
 const bunyan = require("bunyan");
+const packageFile = require("../package.json");
 
 function init(extraConfiguration) {
   const logConf = {
