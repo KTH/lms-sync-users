@@ -1,6 +1,6 @@
 # Run integration tests inside its own container
 # Read more: https://github.com/kth/evolene#integration-testing
-version: '3.2'
+version: "3.2"
 
 services:
   integration_tests:

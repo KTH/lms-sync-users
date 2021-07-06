@@ -1,11 +1,11 @@
-const moment = require('moment')
-let _idleTimeStart = moment()
+const moment = require("moment");
+let _idleTimeStart = moment();
 
 module.exports = {
-  setIdleTimeStart () {
-    _idleTimeStart = moment()
+  setIdleTimeStart() {
+    _idleTimeStart = moment();
   },
-  get idleTimeStart () {
-    return _idleTimeStart
-  }
-}
+  get idleTimeStart() {
+    return _idleTimeStart;
+  },
+};

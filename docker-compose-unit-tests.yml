@@ -1,6 +1,6 @@
 # Run unit tests inside its own container
 # Read more: https://github.com/kth/evolene#unit-testing
-version: '3.2'
+version: "3.2"
 
 services:
   unit_test:

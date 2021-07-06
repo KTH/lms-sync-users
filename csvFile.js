@@ -1,33 +1,33 @@
-const Promise = require('bluebird')
-const fs = Promise.promisifyAll(require('fs'))
-const log = require('./server/logging')
+const Promise = require("bluebird");
+const fs = Promise.promisifyAll(require("fs"));
+const log = require("./server/logging");
 
-function escapeCsvData (str) {
-  str = '' + str
+function escapeCsvData(str) {
+  str = "" + str;
 
   if (str.includes('"')) {
-    log.warn('oh no! bad data!', str)
+    log.warn("oh no! bad data!", str);
   }
 
-  if (str.includes(',')) {
-    log.info('escaping ', str)
-    str = `"${str}"`
+  if (str.includes(",")) {
+    log.info("escaping ", str);
+    str = `"${str}"`;
   }
 
-  return str
+  return str;
 }
 
-function writeLine (strArr, fileName) {
-  const line = createLine(strArr)
-  return fs.appendFileAsync(fileName, line)
+function writeLine(strArr, fileName) {
+  const line = createLine(strArr);
+  return fs.appendFileAsync(fileName, line);
 }
 
-function createLine (strArr) {
-  return strArr.map(escapeCsvData).join(',') + '\n'
+function createLine(strArr) {
+  return strArr.map(escapeCsvData).join(",") + "\n";
 }
 
 module.exports = {
   escapeCsvData,
   writeLine,
-  createLine
-}
+  createLine,
+};

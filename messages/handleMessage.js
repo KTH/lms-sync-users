@@ -1,8 +1,8 @@
-const { handleCourseMessage } = require('./handleCourseMessage')
-const handleUserMessage = require('./handleUserMessage')
-const { handleStaffMessage } = require('./handleStaffMessage')
-const { Type, UserType } = require('./messageType')
-const log = require('../server/logging')
+const { handleCourseMessage } = require("./handleCourseMessage");
+const handleUserMessage = require("./handleUserMessage");
+const { handleStaffMessage } = require("./handleStaffMessage");
+const { Type, UserType } = require("./messageType");
+const log = require("../server/logging");
 
 module.exports = function (msg) {
   if (
@@ -10,18 +10,18 @@ module.exports = function (msg) {
     msg._desc.userType !== UserType.ANTAGNA &&
     msg._desc.userType !== UserType.OMREGISTRERADE
   ) {
-    log.info('Started handling message to update a course info...')
-    return handleCourseMessage(msg)
+    log.info("Started handling message to update a course info...");
+    return handleCourseMessage(msg);
   } else if (msg._desc.type === Type.USER) {
-    log.info('Started handling the queue message to create/update a user...')
-    return handleUserMessage(msg)
+    log.info("Started handling the queue message to create/update a user...");
+    return handleUserMessage(msg);
   } else if (msg._desc.type === Type.STAFF) {
     log.info(
-      'Started handling the queue message to enroll a staff as a student to the course...'
-    )
-    return handleStaffMessage(msg)
+      "Started handling the queue message to enroll a staff as a student to the course..."
+    );
+    return handleStaffMessage(msg);
   } else {
-    log.info('This message type is irrelevant for this app.....')
-    return Promise.resolve(msg)
+    log.info("This message type is irrelevant for this app.....");
+    return Promise.resolve(msg);
   }
-}
+};

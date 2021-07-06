@@ -1,4 +1,4 @@
-version: '2'
+version: "2"
 
 services:
   app:
@@ -6,7 +6,7 @@ services:
     env_file:
       - .env
     environment:
-      LDAP_URI: 'ldaps://ldap.ug.kth.se'
-      LDAP_USERNAME: 'system-lms-integration@ug.kth.se'
+      LDAP_URI: "ldaps://ldap.ug.kth.se"
+      LDAP_USERNAME: "system-lms-integration@ug.kth.se"
     ports:
       - 3000:3000
