@@ -1,5 +1,13 @@
+/* eslint-disable no-console */
 const bunyan = require("bunyan");
 const packageFile = require("../package.json");
+
+const configuration = {
+  log: {
+    level: process.env.LOG_LEVEL || "info",
+    src: process.env.LOG_SRC || false,
+  },
+};
 
 function init(extraConfiguration) {
   const logConf = {
@@ -11,13 +19,6 @@ function init(extraConfiguration) {
   };
   return bunyan.createLogger(logConf);
 }
-
-const configuration = {
-  log: {
-    level: process.env.LOG_LEVEL || "info",
-    src: process.env.LOG_SRC || false,
-  },
-};
 
 // Use 'let' so we can create other instances instead of this one
 let logger = init();
@@ -35,6 +36,8 @@ module.exports = {
     }
     logger.trace("initializing log with settings", extraConfiguration);
     logger = init(extraConfiguration);
+
+    return logger;
   },
   get trace() {
     if (process.env.NODE_ENV === "test") {

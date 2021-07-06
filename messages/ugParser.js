@@ -14,6 +14,7 @@ function parseKeyTeacher(key) {
 
   const myRe = /^edu.courses.(\w+).(\w+).(\d\d)(\d\d)(\d).(\d).(\w+)$/g;
   const myArray = myRe.exec(key);
+
   if (myArray != null) {
     course = myArray[courseIn];
     termin = myArray[terminIn] === "1" ? "VT" : "HT";
@@ -22,6 +23,8 @@ function parseKeyTeacher(key) {
     const sisCourseCode = course + termin + year + ladok;
     return sisCourseCode;
   }
+
+  return null;
 }
 
 function parseKeyStudent(key) {
@@ -45,6 +48,8 @@ function parseKeyStudent(key) {
     const sisCourseCode = course + termin + year + ladok;
     return sisCourseCode;
   }
+
+  return null;
 }
 
 module.exports = {

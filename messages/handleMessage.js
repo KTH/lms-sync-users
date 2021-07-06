@@ -4,6 +4,7 @@ const { handleStaffMessage } = require("./handleStaffMessage");
 const { Type, UserType } = require("./messageType");
 const log = require("../server/logging");
 
+// eslint-disable-next-line func-names
 module.exports = function (msg) {
   if (
     msg._desc.type === Type.COURSE &&

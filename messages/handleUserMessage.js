@@ -63,6 +63,8 @@ function convertToCanvasUser(msg) {
     "\nIncomplete fields to create user in canvas, skipping. Probably,it is missing a name(given_name, family_name) or a username or kth_id.....",
     msg
   );
+
+  return null;
 }
 
 async function createOrUpdate(user) {
@@ -75,9 +77,14 @@ async function createOrUpdate(user) {
       `users/${userFromCanvas.id}/logins`
     );
     const login = loginsForUser.find(
-      (login) => login.unique_id === userFromCanvas.login_id
+      (l) => l.unique_id === userFromCanvas.login_id
     );
-    await canvasApi.requestCanvas(`accounts/1/logins/${login.id}`, "PUT", user);
+
+    return canvasApi.requestCanvas(
+      `accounts/1/logins/${login.id}`,
+      "PUT",
+      user
+    );
   } catch (e) {
     if (e.response.statusCode === 404) {
       log.info("user doesnt exist in canvas. Create it.", user);
@@ -89,6 +96,7 @@ async function createOrUpdate(user) {
   }
 }
 
+// eslint-disable-next-line func-names
 module.exports = async function (msg) {
   const user = convertToCanvasUser(msg);
 

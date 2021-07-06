@@ -19,6 +19,7 @@ async function handleStaffMessage(msg) {
     const sisSectionId = `${msg.ug1Name}.section${i}`;
     for (const member of msg.member) {
       const canvasRole = CanvasRole[msg._desc.userType];
+      // eslint-disable-next-line no-await-in-loop
       await writeLine(
         [sisSectionId, member, canvasRole.role_id, "active"],
         fileName

@@ -12,7 +12,7 @@ const canvasApi = new CanvasApi(
 );
 
 module.exports = {
-  async sendCsvFile(fileName, flag) {
+  async sendCsvFile(fileName) {
     const { body } = await canvasApi.sendSis(
       "accounts/1/sis_imports",
       fileName
@@ -63,8 +63,7 @@ module.exports = {
     );
   },
   async pollUntilSisComplete(sisImportId, wait = 100) {
-    console.log("............", sisImportId);
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       canvasApi.get(`accounts/1/sis_imports/${sisImportId}`).then((result) => {
         logger.info("progress:", result.body.progress);
         if (result.body.progress === 100) {
@@ -75,8 +74,8 @@ module.exports = {
           // Not complete, wait and try again
           setTimeout(
             () =>
-              this.pollUntilSisComplete(sisImportId, wait * 2).then((result) =>
-                resolve(result)
+              this.pollUntilSisComplete(sisImportId, wait * 2).then((r) =>
+                resolve(r)
               ),
             wait
           );

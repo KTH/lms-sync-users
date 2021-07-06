@@ -4,6 +4,7 @@ const rewire = require("rewire");
 const azureSb = require("azure-sb");
 const azureCommon = require("azure-common");
 
+/* eslint-disable no-param-reassign, no-console, consistent-return, no-unused-vars */
 const consumeMessages = rewire("../../messages/consumeMessages");
 
 const serviceBusUrl = "lms-queue.servicebus.windows.net";

@@ -1,13 +1,13 @@
 /**
  * System controller for functions such as /about and /monitor
  */
-const canvasApi = require("../canvasApi");
 const got = require("got");
 const express = require("express");
+const moment = require("moment");
+const canvasApi = require("../canvasApi");
+const packageFile = require("../package.json");
 
 const router = express.Router();
-const moment = require("moment");
-const packageFile = require("../package.json");
 
 const [waitAmount, waitUnit] = [10, "hours"];
 const history = require("../messages/history");
@@ -17,7 +17,7 @@ const version = require("../config/version");
 /* GET /_about
  * About page
  */
-const _about = function (req, res) {
+function _about(req, res) {
   res.setHeader("Content-Type", "text/plain");
   res.send(`
     packageFile.name:${packageFile.name}
@@ -29,7 +29,7 @@ const _about = function (req, res) {
     version.dockerName:${version.dockerName}
     version.dockerVersion:${version.dockerVersion}
     version.jenkinsBuildDate:${version.jenkinsBuildDate}`);
-};
+}
 
 async function checkCanvasStatus() {
   try {

@@ -1,8 +1,8 @@
 const test = require("tape");
-const { UserType } = require("../../../messages/messageType");
 const proxyquire = require("proxyquire");
 require("rewire-global");
 const sinon = require("sinon");
+const { UserType } = require("../../../messages/messageType");
 
 test("should NOT parse key:student for antagna", (t) => {
   const ugParser = { parseKeyStudent: sinon.spy() };

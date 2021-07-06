@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign,no-use-before-define */
 const Promise = require("bluebird");
 const fs = Promise.promisifyAll(require("fs"));
 const log = require("./server/logging");

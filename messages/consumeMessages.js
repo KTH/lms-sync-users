@@ -1,12 +1,11 @@
 const EventEmitter = require("events");
+const container = require("rhea");
 const log = require("../server/logging");
-
-const eventEmitter = new EventEmitter();
 const history = require("./history");
 const { addDescription } = require("./messageType");
 const handleMessage = require("./handleMessage");
-const container = require("rhea");
 
+const eventEmitter = new EventEmitter();
 // The number of credits give to the message receiver at a time i.e. how many messages can be handled in parallell.
 // Note that the code logic is primarily adapted to handle one message, so this value should not be altered without code improvements.
 const CREDIT_INCREMENT = 1;
@@ -89,7 +88,7 @@ container.on("connection_open", (context) => {
   });
 });
 
-container.on("connection_close", (context) => {
+container.on("connection_close", () => {
   log.warn("Connection was closed!");
   if (reconnectClosedConnection) {
     log.info("Attempting to connect to azure once more!");
@@ -119,7 +118,7 @@ container.on("receiver_close", (context) => {
   log.warn(context.receiver.remote.detach);
 });
 
-container.on("receiver_error", (context) => {
+container.on("receiver_error", () => {
   log.warn("Receiver had an error!");
   if (reconnectClosedConnection) {
     stop();
