@@ -1,0 +1,29 @@
+name: Evolene CI
+
+on: push
+jobs:
+  Evolene:
+    name: Continuous Integration
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Run Evolene CI pipeline steps
+        shell: bash
+        env:
+          # Create a file with the build information
+          # BUILD_INFORMATION_OUTPUT_FILE: "/buildinfo.js"
+
+          # Builds non main or master branches.
+          BRANCHES_SAVE_STARTING_WITH: "origin/"
+
+          # Do not add branch names to build artifacts
+          BRANCHES_TAG_AS_MAIN: "True"
+
+          # List of Slack channels for user information
+          SLACK_CHANNELS: "#team-e-larande-build"
+
+          # Skip "dry run" step
+          SKIP_DRY_RUN: True
+
+        run: |
+          ${{ secrets.EVOLENE_RUN_COMMAND }}
