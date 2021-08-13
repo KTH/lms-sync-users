@@ -1,4 +1,4 @@
-FROM kthse/kth-nodejs:10.14.0
+FROM node:14-alpine
 WORKDIR /usr/src/app
 
 COPY package.json package-lock.json ./
