@@ -25,5 +25,8 @@ jobs:
           # Skip "dry run" step
           SKIP_DRY_RUN: True
 
+          PROXY_PREFIX_PATH: "/lms-sync-users"
+          CSV_DIR: "/tmp"
+
         run: |
           ${{ secrets.EVOLENE_RUN_COMMAND }}
