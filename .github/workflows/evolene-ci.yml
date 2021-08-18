@@ -33,6 +33,9 @@ jobs:
           BRANCHES_TAG_AS_MAIN: "True" # Do not add branch names to build artifacts
           SLACK_CHANNELS: "#team-e-larande-build" # List of Slack channels for user information
           SKIP_DRY_RUN: True # Skip "dry run" step
+          
+          # App variables
+          CANVAS_API_URL: "https://kth.test.instructure.com/api/v1"
 
         run: |
           ${{ secrets.EVOLENE_RUN_COMMAND }}
