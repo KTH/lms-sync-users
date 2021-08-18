@@ -35,7 +35,6 @@ jobs:
           SKIP_DRY_RUN: True # Skip "dry run" step
 
           # App variables
-          CANVAS_API_URL: "https://kth.test.instructure.com/api/v1"
 
         run: |
           ${{ secrets.EVOLENE_RUN_COMMAND }}
