@@ -1,7 +1,7 @@
-const test = require("tape");
+const test = require("ava");
 const randomstring = require("randomstring");
 const { promisify } = require("util");
-const { handleMessages } = require("./utils");
+const { handleMessages } = require("./_utils");
 const canvasApi = require("../../canvasApi");
 
 async function createCourse(sisCourseId) {
@@ -43,86 +43,95 @@ async function createUser() {
   return kthId;
 }
 
-test("should enroll an assistant in an existing course in canvas", async (t) => {
-  t.plan(1);
+test.serial(
+  "should enroll an assistant in an existing course in canvas",
+  async (t) => {
+    t.plan(1);
 
-  // Create the "existing course" and the "assistant" in Canvas
-  // Course code should be 6 characters long
-  const courseCode = "A" + randomstring.generate(5);
-  const assistantId = await createUser();
-  const canvasCourse = await createCourse(courseCode + "VT171");
+    // Create the "existing course" and the "assistant" in Canvas
+    // Course code should be 6 characters long
+    const courseCode = "A" + randomstring.generate(5);
+    const assistantId = await createUser();
+    const canvasCourse = await createCourse(courseCode + "VT171");
 
-  const message = {
-    ugClass: "group",
-    ug1Name: `edu.courses.SF.${courseCode}.20171.1.assistants`,
-    member: [assistantId],
-  };
+    const message = {
+      ugClass: "group",
+      ug1Name: `edu.courses.SF.${courseCode}.20171.1.assistants`,
+      member: [assistantId],
+    };
 
-  const [{ resp }] = await handleMessages(message);
-  await canvasApi.pollUntilSisComplete(resp.id);
-  const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
-  t.equal(enrollments[0].sis_user_id, assistantId);
-});
+    const [{ resp }] = await handleMessages(message);
+    await canvasApi.pollUntilSisComplete(resp.id);
+    const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
+    t.is(enrollments[0].sis_user_id, assistantId);
+  }
+);
 
-test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async (t) => {
-  t.plan(2);
-  const muId = 17839; // Miljöutbildningen
-  const ckId = 1; // Canvas at KTH
+test.serial(
+  "should enroll an employee in Miljöutbildningen and Canvas at KTH",
+  async (t) => {
+    t.plan(2);
+    const muId = 17839; // Miljöutbildningen
+    const ckId = 1; // Canvas at KTH
 
-  // Create the "employee" in Canvas
-  const employeeId = await createUser();
+    // Create the "employee" in Canvas
+    const employeeId = await createUser();
 
-  const message = {
-    ugClass: "group",
-    ug1Name: "app.katalog3.A",
-    member: [employeeId],
-  };
+    const message = {
+      ugClass: "group",
+      ug1Name: "app.katalog3.A",
+      member: [employeeId],
+    };
 
-  const [{ resp }] = await handleMessages(message);
-  await canvasApi.pollUntilSisComplete(resp.id);
+    const [{ resp }] = await handleMessages(message);
+    await canvasApi.pollUntilSisComplete(resp.id);
 
-  const muEnrollments = await canvasApi.getSectionEnrollments(
-    muId,
-    "app.katalog3.A.section1"
-  );
-  const ckEnrollments = await canvasApi.getSectionEnrollments(
-    ckId,
-    "app.katalog3.A.section2"
-  );
+    const muEnrollments = await canvasApi.getSectionEnrollments(
+      muId,
+      "app.katalog3.A.section1"
+    );
+    const ckEnrollments = await canvasApi.getSectionEnrollments(
+      ckId,
+      "app.katalog3.A.section2"
+    );
 
-  t.ok(
-    muEnrollments.find((e) => e.user.sis_user_id === employeeId),
-    `The user ${employeeId} has been enrolled in Miljöutbildningen`
-  );
+    t.truthy(
+      muEnrollments.find((e) => e.user.sis_user_id === employeeId),
+      `The user ${employeeId} has been enrolled in Miljöutbildningen`
+    );
 
-  t.ok(
-    ckEnrollments.find((e) => e.user.sis_user_id === employeeId),
-    `The user ${employeeId} has been enrolled in Canvas at KTH`
-  );
-});
+    t.truthy(
+      ckEnrollments.find((e) => e.user.sis_user_id === employeeId),
+      `The user ${employeeId} has been enrolled in Canvas at KTH`
+    );
+  }
+);
 
-test("should NOT enroll a re-registered student in an existing course in Canvas", async (t) => {
-  t.plan(1);
-  const cc0 = "A" + randomstring.generate(1);
-  const cc1 = randomstring.generate(4);
+test.serial(
+  "should NOT enroll a re-registered student in an existing course in Canvas",
+  async (t) => {
+    t.plan(1);
+    const cc0 = "A" + randomstring.generate(1);
+    const cc1 = randomstring.generate(4);
 
-  const canvasCourse = await createCourse(cc0 + cc1 + "VT173");
-  const studentId = await createUser();
+    const canvasCourse = await createCourse(cc0 + cc1 + "VT173");
+    const studentId = await createUser();
 
-  const message = {
-    ugClass: "group",
-    ug1Name: `ladok2.kurser.${cc0}.${cc1}.omregistrerade_20171`,
-    member: [studentId],
-  };
+    const message = {
+      ugClass: "group",
+      ug1Name: `ladok2.kurser.${cc0}.${cc1}.omregistrerade_20171`,
+      member: [studentId],
+    };
 
-  await handleMessages(message);
-  await promisify(setTimeout)(5000);
+    await handleMessages(message);
+    await promisify(setTimeout)(5000);
 
-  const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
-  t.deepEqual(enrollments, []);
-});
+    const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
+    t.deepEqual(enrollments, []);
+  }
+);
 
-test("should enroll a student in an existing course", async (t) => {
+test.serial("should enroll a student in an existing course", async (t) => {
   t.plan(1);
   const cc0 = "A" + randomstring.generate(1);
   const cc1 = randomstring.generate(4);
@@ -136,14 +145,14 @@ test("should enroll a student in an existing course", async (t) => {
     member: [studentId],
   };
 
-  const [{ resp }] = await handleMessages(message);
+  const { resp } = await handleMessages(message);
   await canvasApi.pollUntilSisComplete(resp.id);
 
   const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
-  t.equal(enrollments[0].sis_user_id, studentId);
+  t.is(enrollments[0].sis_user_id, studentId);
 });
 
-test("should enroll TA:s for an f-course", async (t) => {
+test.serial("should enroll TA:s for an f-course", async (t) => {
   t.plan(2);
 
   // Course code is for example "FE" "A1234"
@@ -161,14 +170,14 @@ test("should enroll TA:s for an f-course", async (t) => {
   };
 
   const [{ resp }] = await handleMessages(message);
-  t.ok(resp);
+  t.truthy(resp);
   await canvasApi.pollUntilSisComplete(resp.id);
 
   const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
-  t.equal(enrollments[0].sis_user_id, assistantId);
+  t.is(enrollments[0].sis_user_id, assistantId);
 });
 
-test("should not enroll an antagen", async (t) => {
+test.serial("should not enroll an antagen", async (t) => {
   t.plan(1);
   const cc0 = "A" + randomstring.generate(1);
   const cc1 = randomstring.generate(4);

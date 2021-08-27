@@ -1,10 +1,10 @@
-const test = require("tape");
+const test = require("ava");
 const proxyquire = require("proxyquire");
-require("rewire-global");
+require("rewire-global").enable();
 const sinon = require("sinon");
 const { UserType } = require("../../../messages/messageType");
 
-test("should NOT parse key:student for antagna", (t) => {
+test.serial("should NOT parse key:student for antagna", (t) => {
   const ugParser = { parseKeyStudent: sinon.spy() };
   const handleCourseMessages = proxyquire(
     "../../../messages/handleCourseMessage",
@@ -16,10 +16,9 @@ test("should NOT parse key:student for antagna", (t) => {
       _desc: { userType: UserType.ANTAGNA },
     })
   );
-  t.end();
 });
 
-test("should send the csv file for user type is student", (t) => {
+test.serial("should send the csv file for user type is student", async (t) => {
   t.plan(1);
   const canvasApi = require("../../../canvasApi");
   const createCsvFile = sinon.stub().returns({ name: "file.csv" });
@@ -39,7 +38,7 @@ test("should send the csv file for user type is student", (t) => {
     },
   };
 
-  handleCourseMessages.handleCourseMessage(message).then(() => {
-    t.ok(canvasApi.sendCsvFile.calledWith("file.csv", true));
+  await handleCourseMessages.handleCourseMessage(message).then(() => {
+    t.truthy(canvasApi.sendCsvFile.calledWith("file.csv", true));
   });
 });
