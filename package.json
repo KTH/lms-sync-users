@@ -5,7 +5,7 @@
   "main": "app.js",
   "private": true,
   "scripts": {
-    "test:integration": "cross-env NODE_ENV=test ava",
+    "test:integration": "cross-env NODE_ENV=test ava --timeout 60000",
     "format": "prettier --write .",
     "test": "npm run test:lint && npm run test:format",
     "test:format": "prettier --check .",
