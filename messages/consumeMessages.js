@@ -6,9 +6,6 @@ const { addDescription } = require("./messageType");
 const handleMessage = require("./handleMessage");
 
 const eventEmitter = new EventEmitter();
-// The number of credits give to the message receiver at a time i.e. how many messages can be handled in parallell.
-// Note that the code logic is primarily adapted to handle one message, so this value should not be altered without code improvements.
-const CREDIT_INCREMENT = 1;
 
 async function start() {
   log.info(
@@ -25,14 +22,12 @@ async function start() {
     reconnect: true,
     reconnect_limit: 100,
   });
-  connection.open_receiver(
-    {
+  connection.open_receiver({
     name: process.env.AZURE_SUBSCRIPTION_NAME,
     source: {
       address: process.env.AZURE_SUBSCRIPTION_PATH,
     },
-  }
-  )
+  });
 }
 
 function initLogger(msg, msgId) {
@@ -58,7 +53,6 @@ function initLogger(msg, msgId) {
   return msg && msg.body;
 }
 
-
 container.on("connection_close", () => {
   log.warn("Connection was closed!");
   if (reconnectClosedConnection) {
@@ -83,7 +77,7 @@ container.on("receiver_close", (context) => {
   log.warn(context.receiver.remote.detach);
 });
 
-container.on("receiver_error", err => {
+container.on("receiver_error", (err) => {
   log.warn("Receiver had an error!", err);
 });
 
