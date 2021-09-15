@@ -89,7 +89,7 @@ async function createOrUpdate(user) {
     if (e.response.statusCode === 404) {
       log.info("user doesnt exist in canvas. Create it.", user);
       const res = await canvasApi.createUser(user);
-      log.info("Success! User created", res);
+      log.info("Success! User created", user);
       return res;
     }
     throw e;
