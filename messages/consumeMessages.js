@@ -7,7 +7,7 @@ const handleMessage = require("./handleMessage");
 
 const eventEmitter = new EventEmitter();
 
-async function start() {
+async function start(reconnectClosedConnection = true) {
   log.info(
     `Connecting to the following azure service bus: ${process.env.AZURE_SERVICE_BUS_URL}`
   );
@@ -27,6 +27,14 @@ async function start() {
     source: {
       address: process.env.AZURE_SUBSCRIPTION_PATH,
     },
+  });
+
+  container.on("connection_close", () => {
+    log.warn("Connection was closed!");
+    if (reconnectClosedConnection) {
+      log.info("Attempting to connect to azure once more!");
+      start();
+    }
   });
 }
 
@@ -52,14 +60,6 @@ function initLogger(msg, msgId) {
 
   return msg && msg.body;
 }
-
-container.on("connection_close", () => {
-  log.warn("Connection was closed!");
-  if (reconnectClosedConnection) {
-    log.info("Attempting to connect to azure once more!");
-    start();
-  }
-});
 
 container.on("connection_error", (context) => {
   log.error(`Connection had an error: ${context.connection.get_error()}`);
@@ -141,10 +141,6 @@ container.on("message", async (context) => {
     }
   } catch (err) {
     log.error(`An unhandled exception occured in onMessage: ${err}`);
-  } finally {
-    log.debug(`Adding ${CREDIT_INCREMENT} credit(s).`);
-    context.receiver.add_credit(CREDIT_INCREMENT);
-    eventEmitter.emit("messageProcessed", jsonData, result);
   }
 });
 
