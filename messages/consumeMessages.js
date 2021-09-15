@@ -10,24 +10,11 @@ const eventEmitter = new EventEmitter();
 // Note that the code logic is primarily adapted to handle one message, so this value should not be altered without code improvements.
 const CREDIT_INCREMENT = 1;
 
-// Variable for determining behavior on connection closed.
-let reconnectClosedConnection = true;
-// Simply saving a reference to the latest connection, for testing purposes.
-let connection; // eslint-disable-line
-
-/**
- * To make sure rhea is consuming one message at a time, we are manually handling the receiver's credits.
- * Upon opening a receiver, it is handed a number of credits equal to the constant CREDIT_INCREMENT.
- * This credit is consumed once a message is received, and yet another credit given once it has been handled.
- * To be able to handle both a production scenario where we never want the connection to close and a testing scenarion,
- * there is a parameter for reconnecting even when a connection is closed.
- */
-async function start(reconnect = true) {
-  reconnectClosedConnection = reconnect;
+async function start() {
   log.info(
     `Connecting to the following azure service bus: ${process.env.AZURE_SERVICE_BUS_URL}`
   );
-  connection = container.connect({
+  const connection = container.connect({
     transport: "tls",
     host: process.env.AZURE_SERVICE_BUS_URL,
     hostname: process.env.AZURE_SERVICE_BUS_URL,
@@ -38,13 +25,14 @@ async function start(reconnect = true) {
     reconnect: true,
     reconnect_limit: 100,
   });
-}
-
-async function stop() {
-  log.info("Closing all existing connections.");
-  if (connection) {
-    connection.close();
+  connection.open_receiver(
+    {
+    name: process.env.AZURE_SUBSCRIPTION_NAME,
+    source: {
+      address: process.env.AZURE_SUBSCRIPTION_PATH,
+    },
   }
+  )
 }
 
 function initLogger(msg, msgId) {
@@ -70,23 +58,6 @@ function initLogger(msg, msgId) {
   return msg && msg.body;
 }
 
-container.on("connection_open", (context) => {
-  log.info("Connection was opened!");
-  log.info(
-    `opening receiver for subscription: ${process.env.AZURE_SUBSCRIPTION_NAME} @ ${process.env.AZURE_SUBSCRIPTION_PATH}`
-  );
-  context.connection.open_receiver({
-    name: process.env.AZURE_SUBSCRIPTION_NAME,
-    source: {
-      address: process.env.AZURE_SUBSCRIPTION_PATH,
-      dynamic: false,
-      durable: 2, // NOTE: Value taken from rhea official code example for durable subscription reader.
-      expiry_policy: "never",
-    },
-    autoaccept: false,
-    credit_window: 0,
-  });
-});
 
 container.on("connection_close", () => {
   log.warn("Connection was closed!");
@@ -107,22 +78,13 @@ container.on("disconnected", (context) => {
   log.warn("Connection was disconnected!");
 });
 
-container.on("receiver_open", (context) => {
-  log.info("Receiver was opened.");
-  log.debug(`Adding ${CREDIT_INCREMENT} credit(s).`);
-  context.receiver.add_credit(CREDIT_INCREMENT);
-});
-
 container.on("receiver_close", (context) => {
   log.warn("Receiver was closed!");
   log.warn(context.receiver.remote.detach);
 });
 
-container.on("receiver_error", () => {
-  log.warn("Receiver had an error!");
-  if (reconnectClosedConnection) {
-    stop();
-  }
+container.on("receiver_error", err => {
+  log.warn("Receiver had an error!", err);
 });
 
 container.on("message", async (context) => {
