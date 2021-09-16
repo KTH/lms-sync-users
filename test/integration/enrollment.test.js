@@ -64,7 +64,7 @@ test("should enroll an assistant in an existing course in canvas", async (t) => 
   t.equal(enrollments[0].sis_user_id, assistantId);
 });
 
-test.skip("should enroll an employee in Miljöutbildningen and Canvas at KTH", async (t) => {
+test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async (t) => {
   t.plan(2);
   const muId = 17839; // Miljöutbildningen
   const ckId = 1; // Canvas at KTH
