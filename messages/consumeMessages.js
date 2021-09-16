@@ -15,6 +15,7 @@ function close() {
 }
 
 async function start(reconnectClosedConnection = true) {
+  log.info("starting the connection in a standard way");
   connection = container.connect({
     transport: "tls",
     host: process.env.AZURE_SERVICE_BUS_URL,
