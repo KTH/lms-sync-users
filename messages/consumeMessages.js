@@ -7,7 +7,15 @@ const handleMessage = require("./handleMessage");
 
 const eventEmitter = new EventEmitter();
 
-const connection = container.connect({
+let connection 
+
+function close(){
+  log.info('closing the connection')
+  connection.close()
+}
+
+async function start(reconnectClosedConnection = true) {
+  connection = container.connect({
     transport: "tls",
     host: process.env.AZURE_SERVICE_BUS_URL,
     hostname: process.env.AZURE_SERVICE_BUS_URL,
@@ -19,13 +27,7 @@ const connection = container.connect({
     reconnect_limit: 100,
   });
 
-function close(){
-  log.info('closing the connection')
-  connection.close()
-}
-
-async function start(reconnectClosedConnection = true) {
-  log.info(
+log.info(
     `Connecting to the following azure service bus: ${process.env.AZURE_SERVICE_BUS_URL}`
   );
     connection.open_receiver({
