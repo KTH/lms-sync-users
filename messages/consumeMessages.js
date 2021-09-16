@@ -7,11 +7,7 @@ const handleMessage = require("./handleMessage");
 
 const eventEmitter = new EventEmitter();
 
-async function start(reconnectClosedConnection = true) {
-  log.info(
-    `Connecting to the following azure service bus: ${process.env.AZURE_SERVICE_BUS_URL}`
-  );
-  const connection = container.connect({
+const connection = container.connect({
     transport: "tls",
     host: process.env.AZURE_SERVICE_BUS_URL,
     hostname: process.env.AZURE_SERVICE_BUS_URL,
@@ -22,7 +18,17 @@ async function start(reconnectClosedConnection = true) {
     reconnect: true,
     reconnect_limit: 100,
   });
-  connection.open_receiver({
+
+function close(){
+  log.info('closing the connection')
+  connection.close()
+}
+
+async function start(reconnectClosedConnection = true) {
+  log.info(
+    `Connecting to the following azure service bus: ${process.env.AZURE_SERVICE_BUS_URL}`
+  );
+    connection.open_receiver({
     name: process.env.AZURE_SUBSCRIPTION_NAME,
     source: {
       address: process.env.AZURE_SUBSCRIPTION_PATH,
@@ -107,8 +113,6 @@ container.on("message", async (context) => {
           const enqueuedTime =
             context.message.message_annotations["x-opt-enqueued-time"];
           const timeInQueue = now - enqueuedTime;
-          log.info({ "metric.timeInQueue": timeInQueue });
-          log.info({ "metric.handleMessage": 1 });
           result = await handleMessage(body);
           log.info("result from handleMessage", result);
           context.delivery.accept();
@@ -147,4 +151,5 @@ container.on("message", async (context) => {
 module.exports = {
   start,
   eventEmitter,
+  close
 };

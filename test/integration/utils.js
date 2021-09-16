@@ -91,7 +91,7 @@ async function handleMessages(...messages) {
       messages,
       sendAndWaitUntilMessageProcessed
     );
-    consumeMessages.__get__("connection").close();
+    consumeMessages.close();
     return result;
   } catch (e) {
     console.error(`An exception occured when running handleMessage: ${e}`);
