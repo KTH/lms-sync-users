@@ -145,7 +145,9 @@ container.on("message", async (context) => {
     }
   } catch (err) {
     log.error(`An unhandled exception occured in onMessage: ${err}`);
-  }
+ } finally {
+    eventEmitter.emit("messageProcessed", jsonData, result);
+  } 
 });
 
 module.exports = {
