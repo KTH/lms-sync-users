@@ -7,11 +7,11 @@ const handleMessage = require("./handleMessage");
 
 const eventEmitter = new EventEmitter();
 
-let connection 
+let connection;
 
-function close(){
-  log.info('closing the connection')
-  connection.close()
+function close() {
+  log.info("closing the connection");
+  connection.close();
 }
 
 async function start(reconnectClosedConnection = true) {
@@ -27,10 +27,10 @@ async function start(reconnectClosedConnection = true) {
     reconnect_limit: 100,
   });
 
-log.info(
+  log.info(
     `Connecting to the following azure service bus: ${process.env.AZURE_SERVICE_BUS_URL}`
   );
-    connection.open_receiver({
+  connection.open_receiver({
     name: process.env.AZURE_SUBSCRIPTION_NAME,
     source: {
       address: process.env.AZURE_SUBSCRIPTION_PATH,
@@ -147,13 +147,13 @@ container.on("message", async (context) => {
     }
   } catch (err) {
     log.error(`An unhandled exception occured in onMessage: ${err}`);
- } finally {
+  } finally {
     eventEmitter.emit("messageProcessed", jsonData, result);
-  } 
+  }
 });
 
 module.exports = {
   start,
   eventEmitter,
-  close
+  close,
 };

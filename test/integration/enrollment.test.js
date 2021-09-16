@@ -81,23 +81,23 @@ test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async 
   const [{ resp }] = await handleMessages(message);
   await canvasApi.pollUntilSisComplete(resp.id);
 
-  console.log('::::::::::::;1')
+  console.log("::::::::::::;1");
   const muEnrollments = await canvasApi.getSectionEnrollments(
     muId,
     "app.katalog3.A.section1"
   );
-  console.log('::::::::::::;2')
+  console.log("::::::::::::;2");
   const ckEnrollments = await canvasApi.getSectionEnrollments(
     ckId,
     "app.katalog3.A.section2"
   );
-  console.log('::::::::::::;3')
+  console.log("::::::::::::;3");
 
   t.ok(
     muEnrollments.find((e) => e.user.sis_user_id === employeeId),
     `The user ${employeeId} has been enrolled in Miljöutbildningen`
   );
-  console.log('::::::::::::;4')
+  console.log("::::::::::::;4");
 
   t.ok(
     ckEnrollments.find((e) => e.user.sis_user_id === employeeId),
