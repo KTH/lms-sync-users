@@ -115,6 +115,7 @@ container.on("message", async (context) => {
           const enqueuedTime =
             context.message.message_annotations["x-opt-enqueued-time"];
           const timeInQueue = now - enqueuedTime;
+          log.info({ "metric.timeInQueue": timeInQueue });
           result = await handleMessage(body);
           log.info("result from handleMessage", result);
           context.delivery.accept();
