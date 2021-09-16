@@ -99,7 +99,6 @@ module.exports = {
       })
       .toArray();
 
-    console.log("getSectionEnrollments");
     return enrollments;
   },
 
