@@ -6,6 +6,7 @@ const systemRoutes = require("./server/systemroutes");
 const log = require("./server/logging");
 
 consumeMessages.start();
+[...Array(1000).keys()].forEach((i) => log.info(`logging line ${i}`));
 
 const prefix = process.env.PROXY_PREFIX_PATH || "/lms-sync-users";
 
