@@ -1,9 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
+const log = require("skog");
 const csv = require("fast-csv");
+const canvasApi = require("../externalApis/canvasApi");
 
 const terms = { 1: "VT", 2: "HT" };
+const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
+const dir = path.join(baseDir, "csv");
+fs.mkdirSync(dir);
 
 function createSisCourseId({ courseCode, startTerm, roundId }) {
   const termNum = startTerm[4];
@@ -105,8 +110,8 @@ function getEnrollmentCsvData(group) {
 }
 
 module.exports = async function handleGroupMessage(message) {
-  // TODO: filename
-  const writer = fs.createWriteStream("filename");
+  const fileName = `${dir}/${message.group}-${Date.now()}.csv`;
+  const writer = fs.createWriteStream(fileName);
   const serializer = csv.format({ headers: true });
   const enrollments = getEnrollmentCsvData(message.group);
 
@@ -123,5 +128,11 @@ module.exports = async function handleGroupMessage(message) {
 
   serializer.end();
 
-  // TODO: Upload file to Canvas
+  const { body } = await canvasApi.sendEnrollments(path);
+
+  const url = new URL(
+    `accounts/1/sis_imports/${body.id}`,
+    process.env.CANVAS_API_URL
+  );
+  log.info(`Enrollments for ${message.group} sent to Canvas. Check ${url}`);
 };

@@ -44,6 +44,10 @@ async function updateLogin(userId, loginId, data) {
   return canvas.request(`users/${userId}/logins/${loginId}`, "PUT", data);
 }
 
+async function sendEnrollments(path) {
+  return canvas.sisImport(path);
+}
+
 module.exports = {
   getUser,
   updateUser,
@@ -51,4 +55,5 @@ module.exports = {
   getPrimaryLoginId,
   getRootAccount,
   updateLogin,
+  sendEnrollments,
 };
