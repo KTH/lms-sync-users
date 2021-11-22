@@ -4,15 +4,15 @@
 const got = require("got");
 const express = require("express");
 const moment = require("moment");
-const canvasApi = require("../canvasApi");
-const packageFile = require("../package.json");
+const log = require("skog");
+const { getRootAccount } = require("../externalApis/canvasApi");
+const packageFile = require("../../package.json");
 
 const router = express.Router();
 
 const [waitAmount, waitUnit] = [10, "hours"];
-const history = require("../messages/history");
-const log = require("./logging");
-const version = require("../config/version");
+const history = require("../../messages/history");
+const version = require("../../config/version");
 
 /* GET /_about
  * About page
@@ -48,7 +48,8 @@ async function checkCanvasStatus() {
 
 async function checkCanvasKey() {
   try {
-    return await canvasApi.getRootAccount();
+    await getRootAccount();
+    return true;
   } catch (e) {
     log.error("Could not use canvas api.");
     return false;

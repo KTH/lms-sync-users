@@ -1,0 +1,76 @@
+const log = require("skog");
+const CanvasApi = require("@kth/canvas-api").default;
+
+const canvas = new CanvasApi("", "");
+
+function shouldBeHandled(message) {
+  const affiliations = message.affiliation;
+
+  return (
+    affiliations.includes("employee") ||
+    affiliations.includes("student") ||
+    affiliations.includes("member") ||
+    affiliations.includes("affiliate")
+  );
+}
+
+module.exports = async function handleUserMessage(message) {
+  if (!shouldBeHandled(message)) {
+    log.info("Message ignored. We don't handle users with these affiliations.");
+    return;
+  }
+
+  if (!message.kthid) {
+    log.info("Message ignored. Missing field [kthid]");
+    return;
+  }
+
+  if (!message.username) {
+    log.info("Message ignored. Missing field [username]");
+    return;
+  }
+
+  if (!message.given_name && !message.family_name) {
+    log.info("Message ignored. Missing either [given_name] or [family_name]");
+    return;
+  }
+
+  const canvasObject = {
+    pseudonym: {
+      unique_id: `${message.username}@kth.se`,
+      sis_user_id: message.kthid,
+      integration_id: message.ladok3_student_uid || null,
+    },
+    user: {
+      name: `${message.given_name} ${message.family_name}`,
+      email: message.primary_email, // must be when 'updating' user
+      sortable_name: `${message.family_name}, ${message.given_name}`,
+      short_name: null, // a fix to make sure that display name is updated
+    },
+    communication_channel: {
+      // must be when 'creating' user
+      type: "email",
+      address: message.primary_email,
+      skip_confirmation: true,
+    },
+    login: {
+      integration_id: message.ladok3_student_uid || null, // For setting integration_id on update via the logins endpoint
+    },
+  };
+
+  const userFromCanvas = await canvas
+    .get(`account/1/users/sis_user_id:${message.kthid}`)
+    .catch((err) => {
+      if (err?.response?.statusCode === 404) {
+        return null;
+      }
+
+      throw err;
+    });
+
+  if (!userFromCanvas) {
+    // TODO: create user
+  } else {
+    // TODO: update user
+  }
+};

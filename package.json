@@ -14,16 +14,18 @@
     "debug": "NODE_ENV=development node --nolazy --inspect-brk=9229 app.js | bunyan -o short"
   },
   "dependencies": {
-    "@kth/canvas-api": "^3.0.2",
+    "@kth/canvas-api": "^4.0.0",
     "@kth/reqvars": "^2.0.1",
     "bluebird": "^3.7.2",
     "bunyan": "^1.8.13",
     "dotenv": "^6.2.0",
     "express": "^4.17.1",
+    "fast-csv": "^4.3.6",
     "got": "^11.8.1",
     "kth-node-server": "^3.1.2",
     "moment": "^2.27.0",
     "rhea": "^1.0.12",
+    "skog": "^2.1.0",
     "urlencode": "^1.1.0"
   },
   "devDependencies": {
