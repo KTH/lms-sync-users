@@ -1,7 +1,5 @@
 const log = require("skog");
-const CanvasApi = require("@kth/canvas-api").default;
-
-const canvas = new CanvasApi("", "");
+const canvasApi = require("../externalApis/canvasApi");
 
 function shouldBeHandled(message) {
   const affiliations = message.affiliation;
@@ -58,19 +56,19 @@ module.exports = async function handleUserMessage(message) {
     },
   };
 
-  const userFromCanvas = await canvas
-    .get(`account/1/users/sis_user_id:${message.kthid}`)
-    .catch((err) => {
-      if (err?.response?.statusCode === 404) {
-        return null;
-      }
-
-      throw err;
-    });
+  const userFromCanvas = await canvasApi.getUser(message.kthid);
 
   if (!userFromCanvas) {
-    // TODO: create user
+    await canvasApi.createUser(canvasObject);
+    log.info(`User ${message.kthid} created in Canvas`);
   } else {
-    // TODO: update user
+    await canvasApi.updateUser(userFromCanvas.id, canvasObject);
+    const primaryLogin = await canvasApi.getPrimaryLoginId(userFromCanvas);
+
+    await canvasApi.updateLogin(
+      userFromCanvas.id,
+      primaryLogin.id,
+      canvasObject
+    );
   }
 };
