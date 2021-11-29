@@ -89,7 +89,9 @@ async function receiveMessage(message) {
 
   if (!messageBody) {
     log.info("Message is empty or undefined, deleting from queue...");
-    return;
+    return {
+      type: "empty",
+    };
   }
 
   const enqueuedTime = message.message_annotations["x-opt-enqueued-time"];
@@ -99,7 +101,7 @@ async function receiveMessage(message) {
     "metric.handleMessage": 1,
   });
 
-  await handleMessage(messageBody).catch((err) => {
+  return handleMessage(messageBody).catch((err) => {
     throw new MessageError(
       "handle_message_error",
       "Error handling message",
@@ -173,8 +175,8 @@ container.on("message", async (context) => {
     );
     log.debug("Consumed 1 credit. ");
 
-    await receiveMessage(context.message);
-
+    const result = await receiveMessage(context.message);
+    eventEmitter.emit("message_processed", result);
     context.delivery.accept();
   } catch (err) {
     // If the message is missing typecode, log an error but not mark the message
@@ -198,7 +200,6 @@ container.on("message", async (context) => {
     });
   } finally {
     log.debug(`Adding ${CREDIT_INCREMENT} credit(s).`);
-    eventEmitter.emit("messageProcessed");
     context.receiver.add_credit(CREDIT_INCREMENT);
   }
 });
