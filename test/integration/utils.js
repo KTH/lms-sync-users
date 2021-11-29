@@ -1,11 +1,10 @@
 const crypto = require("crypto");
 const Promise = require("bluebird");
-const rewire = require("rewire");
 const azureSb = require("azure-sb");
 const azureCommon = require("azure-common");
 
 /* eslint-disable no-param-reassign, no-console, consistent-return, no-unused-vars */
-const consumeMessages = rewire("../../messages/consumeMessages");
+const consumeMessages = require("../../src/messageConsumer");
 
 const serviceBusUrl = "lms-queue.servicebus.windows.net";
 const topicNamePrefix = "lms-topic-integration-test-";
@@ -91,7 +90,7 @@ async function handleMessages(...messages) {
       messages,
       sendAndWaitUntilMessageProcessed
     );
-    consumeMessages.__get__("connection").close();
+    await consumeMessages.stop();
     return result;
   } catch (e) {
     console.error(`An exception occured when running handleMessage: ${e}`);
