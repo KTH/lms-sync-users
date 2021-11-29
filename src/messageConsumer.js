@@ -68,6 +68,17 @@ async function stop() {
   }
 }
 
+/**
+ *
+ * @returns {object} An object with the following properties:
+ * - type: type of the message. It can be "user", "group", "other" or "empty".
+ * - if type is "user", the following properties are available:
+ *   - user.id      user ID in Canvas
+ *   - user.action  action performed on the user: "create" or "update"
+ * - if type is "group", the following properties are available:
+ *   - group.name          group name in UG
+ *   - group.sisImportId   Canvas SIS Import ID
+ */
 async function receiveMessage(message) {
   latestMessageTime = new Date();
 

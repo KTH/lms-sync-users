@@ -6,9 +6,9 @@ const csv = require("fast-csv");
 const canvasApi = require("../externalApis/canvasApi");
 
 const terms = { 1: "VT", 2: "HT" };
-const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
-const dir = path.join(baseDir, "csv");
-fs.mkdirSync(dir);
+const temporalDirectory = fs.mkdtempSync(
+  path.join(os.tmpdir(), "lms-sync-users-")
+);
 
 function createSisCourseId({ courseCode, startTerm, roundId }) {
   const termNum = startTerm[4];
@@ -40,7 +40,7 @@ function getTeacherEnrollmentCsvData(group) {
 
   return [
     {
-      sis_section_id: sisId,
+      section_id: sisId,
       status: "active",
       role_id: roleIds[roleName],
     },
@@ -65,12 +65,12 @@ function getStudentEnrollmentCsvData(group) {
 
   return [
     {
-      sis_section_id: sisId,
+      section_id: sisId,
       status: "active",
       role_id: 3,
     },
     {
-      sis_section_id: sisId,
+      section_id: sisId,
       status: "deleted",
       role_id: 25,
     },
@@ -87,7 +87,7 @@ function getEmployeeEnrollmentCsvData(group) {
   }
 
   return [1, 2, 3, 4, 5].map((i) => ({
-    sis_section_id: `${group}.section${i}`,
+    section_id: `${group}.section${i}`,
     role_id: 3,
     status: "active",
   }));
@@ -110,15 +110,18 @@ function getEnrollmentCsvData(group) {
 }
 
 module.exports = async function handleGroupMessage(message) {
-  const fileName = `${dir}/${message.group}-${Date.now()}.csv`;
-  const writer = fs.createWriteStream(fileName);
-  const serializer = csv.format({ headers: true });
-  const enrollments = getEnrollmentCsvData(message.group);
+  const { ug1Name: groupName, member: members } = message;
+  const fileName = `${groupName}-${Date.now()}.csv`;
+  const filePath = path.join(temporalDirectory, fileName);
 
+  const writer = fs.createWriteStream(filePath);
+  const serializer = csv.format({ headers: true });
   serializer.pipe(writer);
 
+  const enrollments = getEnrollmentCsvData(groupName);
+
   for (const enrollment of enrollments) {
-    for (const userId of message.member) {
+    for (const userId of members) {
       serializer.write({
         ...enrollment,
         user_id: userId,
@@ -128,11 +131,21 @@ module.exports = async function handleGroupMessage(message) {
 
   serializer.end();
 
-  const { body } = await canvasApi.sendEnrollments(path);
+  await new Promise((resolve, reject) => {
+    writer.on("finish", resolve);
+    writer.on("error", reject);
+  });
+
+  const { body } = await canvasApi.sendEnrollments(filePath);
 
   const url = new URL(
     `accounts/1/sis_imports/${body.id}`,
     process.env.CANVAS_API_URL
   );
-  log.info(`Enrollments for ${message.group} sent to Canvas. Check ${url}`);
+  log.info(`Enrollments for ${groupName} sent to Canvas. Check ${url}`);
+
+  return {
+    name: groupName,
+    sisImportId: body.id,
+  };
 };

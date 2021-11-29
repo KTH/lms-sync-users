@@ -15,22 +15,22 @@ function shouldBeHandled(message) {
 module.exports = async function handleUserMessage(message) {
   if (!shouldBeHandled(message)) {
     log.info("Message ignored. We don't handle users with these affiliations.");
-    return;
+    return { action: "ignore" };
   }
 
   if (!message.kthid) {
     log.info("Message ignored. Missing field [kthid]");
-    return;
+    return { action: "ignore" };
   }
 
   if (!message.username) {
     log.info("Message ignored. Missing field [username]");
-    return;
+    return { action: "ignore" };
   }
 
   if (!message.given_name && !message.family_name) {
     log.info("Message ignored. Missing either [given_name] or [family_name]");
-    return;
+    return { action: "ignore" };
   }
 
   const canvasObject = {
@@ -59,17 +59,16 @@ module.exports = async function handleUserMessage(message) {
   const userFromCanvas = await canvasApi.getUser(message.kthid);
 
   if (!userFromCanvas) {
-    await canvasApi.createUser(canvasObject);
+    const user = await canvasApi.createUser(canvasObject);
     log.info(`User ${message.kthid} created in Canvas`);
-  } else {
-    await canvasApi.updateUser(userFromCanvas.id, canvasObject);
-    const primaryLogin = await canvasApi.getPrimaryLoginId(userFromCanvas);
 
-    await canvasApi.updateLogin(
-      userFromCanvas.id,
-      primaryLogin.id,
-      canvasObject
-    );
-    log.info(`User ${message.kthid} updated in Canvas`);
+    return { action: "create", id: user.id };
   }
+
+  const user = await canvasApi.updateUser(userFromCanvas.id, canvasObject);
+  const primaryLogin = await canvasApi.getPrimaryLoginId(userFromCanvas);
+
+  await canvasApi.updateLogin(userFromCanvas.id, primaryLogin.id, canvasObject);
+  log.info(`User ${message.kthid} updated in Canvas`);
+  return { action: "update", id: user.id };
 };
