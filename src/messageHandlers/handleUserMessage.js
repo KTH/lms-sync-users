@@ -70,5 +70,6 @@ module.exports = async function handleUserMessage(message) {
       primaryLogin.id,
       canvasObject
     );
+    log.info(`User ${message.kthid} updated in Canvas`);
   }
 };
