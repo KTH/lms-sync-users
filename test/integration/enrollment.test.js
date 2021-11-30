@@ -4,7 +4,7 @@ const { promisify } = require("util");
 const handleMessage = require("../../src/messageHandlers");
 const canvasApi = require("../../src/externalApis/canvasApi");
 
-async function createCourse(sisCourseId) {
+async function createFakeCourse(sisCourseId) {
   const ACCOUNT_ID = 14;
   const course = {
     name: `Integration test ${sisCourseId}`,
@@ -18,7 +18,7 @@ async function createCourse(sisCourseId) {
   return canvasCourse;
 }
 
-async function createUser() {
+async function createFakeUser() {
   const kthId = `v${randomstring.generate(7)}`;
   const email = `${kthId}@kth.se`;
   await canvasApi.createUser({
@@ -49,8 +49,8 @@ test("should enroll an assistant in an existing course in canvas", async (t) => 
   // Create the "existing course" and the "assistant" in Canvas
   // Course code should be 6 characters long
   const courseCode = "A" + randomstring.generate(5);
-  const assistantId = await createUser();
-  const canvasCourse = await createCourse(courseCode + "VT171");
+  const assistantId = await createFakeUser();
+  const canvasCourse = await createFakeCourse(courseCode + "VT171");
 
   const message = {
     ugClass: "group",
@@ -70,7 +70,7 @@ test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async 
   t.plan(3);
 
   // Create the "employee" in Canvas
-  const employeeId = await createUser();
+  const employeeId = await createFakeUser();
 
   const message = {
     ugClass: "group",
@@ -109,8 +109,8 @@ test("should NOT enroll a re-registered student in an existing course in Canvas"
   const cc0 = "A" + randomstring.generate(1);
   const cc1 = randomstring.generate(4);
 
-  const canvasCourse = await createCourse(cc0 + cc1 + "VT173");
-  const studentId = await createUser();
+  const canvasCourse = await createFakeCourse(cc0 + cc1 + "VT173");
+  const studentId = await createFakeUser();
 
   const message = {
     ugClass: "group",
@@ -130,8 +130,8 @@ test("should enroll a student in an existing course", async (t) => {
   const cc0 = "A" + randomstring.generate(1);
   const cc1 = randomstring.generate(4);
 
-  const canvasCourse = await createCourse(cc0 + cc1 + "VT171");
-  const studentId = await createUser();
+  const canvasCourse = await createFakeCourse(cc0 + cc1 + "VT171");
+  const studentId = await createFakeUser();
 
   const message = {
     ugClass: "group",
@@ -155,8 +155,8 @@ test("should enroll TA:s for an f-course", async (t) => {
   const cc1 = randomstring.generate(4);
   const courseCode = cc0 + cc1;
 
-  const canvasCourse = await createCourse(courseCode + "VT171");
-  const assistantId = await createUser();
+  const canvasCourse = await createFakeCourse(courseCode + "VT171");
+  const assistantId = await createFakeUser();
 
   const message = {
     ugClass: "group",
@@ -178,8 +178,8 @@ test("should not enroll an antagen", async (t) => {
   const cc0 = "A" + randomstring.generate(1);
   const cc1 = randomstring.generate(4);
 
-  const canvasCourse = await createCourse(cc0 + cc1 + "VT181");
-  const studentId = await createUser();
+  const canvasCourse = await createFakeCourse(cc0 + cc1 + "VT181");
+  const studentId = await createFakeUser();
 
   const message = {
     ugClass: "group",
