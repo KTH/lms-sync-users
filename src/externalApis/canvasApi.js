@@ -21,7 +21,7 @@ async function getUser(kthId) {
 }
 
 async function updateUser(userId, data) {
-  return canvas.request(`users/${userId}`, "PUT", data);
+  return canvas.request(`users/${userId}`, "PUT", data).then((res) => res.body);
 }
 
 async function createUser(user) {

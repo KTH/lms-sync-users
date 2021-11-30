@@ -4,7 +4,7 @@ const handleMessage = require("../../src/messageHandlers");
 const canvasApi = require("../../src/externalApis/canvasApi");
 
 test("should create a new user in canvas", async (t) => {
-  t.plan(3);
+  t.plan(4);
   const kthid = randomstring.generate(8);
   const ladokId = randomstring.generate(24);
   const username = `${kthid}_abc`;
@@ -38,7 +38,7 @@ test("should create a new user in canvas", async (t) => {
 });
 
 test("should create a new user in canvas even without ladokId", async (t) => {
-  t.plan(3);
+  t.plan(4);
   const kthid = randomstring.generate(8);
   const username = `${kthid}_abc`;
   const message = {
@@ -70,7 +70,7 @@ test("should create a new user in canvas even without ladokId", async (t) => {
 });
 
 test("should create a new user of affiliation:member in canvas", async (t) => {
-  t.plan(3);
+  t.plan(4);
   const kthid = randomstring.generate(8);
   const username = `${kthid}_abc`;
   const ladokId = randomstring.generate(24);
@@ -104,7 +104,7 @@ test("should create a new user of affiliation:member in canvas", async (t) => {
 });
 
 test("should not create a new user of affiliation:other in canvas", async (t) => {
-  t.plan(3);
+  t.plan(4);
   const kthid = randomstring.generate(8);
   const username = `${kthid}_abc`;
   const ladokId = randomstring.generate(24);
@@ -129,7 +129,7 @@ test("should not create a new user of affiliation:other in canvas", async (t) =>
 });
 
 test("should update a user in canvas", async (t) => {
-  t.plan(1);
+  t.plan(2);
   const kthid = "emiluppdaterar-namn";
   const username = `${kthid}_abc`;
   const ladokId = randomstring.generate(24);
@@ -169,7 +169,7 @@ test("should update a user in canvas", async (t) => {
   t.equal(
     user.id,
     result.user.id,
-    "Created user in Canvas should be same as value returned by handleMessage"
+    "Updated user in Canvas should be same as value returned by handleMessage"
   );
 });
 
@@ -213,6 +213,6 @@ test("should update a user in canvas even if Ladok ID is not supplied", async (t
   t.equal(
     user.id,
     result.user.id,
-    "Created user in Canvas should be same as value returned by handleMessage"
+    "Updated user in Canvas should be same as value returned by handleMessage"
   );
 });
