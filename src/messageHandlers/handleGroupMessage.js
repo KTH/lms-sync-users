@@ -120,6 +120,10 @@ module.exports = async function handleGroupMessage(message) {
 
   const enrollments = getEnrollmentCsvData(groupName);
 
+  if (enrollments.length === 0) {
+    return { sisImportId: null };
+  }
+
   for (const enrollment of enrollments) {
     for (const userId of members) {
       serializer.write({
@@ -139,13 +143,10 @@ module.exports = async function handleGroupMessage(message) {
   const { body } = await canvasApi.sendEnrollments(filePath);
 
   const url = new URL(
-    `accounts/1/sis_imports/${body.id}`,
+    `/api/v1/accounts/1/sis_imports/${body.id}`,
     process.env.CANVAS_API_URL
   );
   log.info(`Enrollments for ${groupName} sent to Canvas. Check ${url}`);
 
-  return {
-    name: groupName,
-    sisImportId: body.id,
-  };
+  return { sisImportId: body.id };
 };
