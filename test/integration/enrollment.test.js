@@ -1,8 +1,8 @@
 const test = require("tape");
 const randomstring = require("randomstring");
 const { promisify } = require("util");
-const { handleMessages } = require("./utils");
-const canvasApi = require("../../canvasApi");
+const handleMessage = require("../../src/messageHandlers");
+const canvasApi = require("../../src/externalApis/canvasApi");
 
 async function createCourse(sisCourseId) {
   const ACCOUNT_ID = 14;
@@ -12,7 +12,7 @@ async function createCourse(sisCourseId) {
     sis_course_id: sisCourseId,
   };
 
-  const canvasCourse = await canvasApi.createCourse({ course }, ACCOUNT_ID);
+  const canvasCourse = await canvasApi.createCourse(ACCOUNT_ID, { course });
   await canvasApi.createDefaultSection(canvasCourse);
 
   return canvasCourse;
@@ -44,7 +44,7 @@ async function createUser() {
 }
 
 test("should enroll an assistant in an existing course in canvas", async (t) => {
-  t.plan(1);
+  t.plan(2);
 
   // Create the "existing course" and the "assistant" in Canvas
   // Course code should be 6 characters long
@@ -58,16 +58,16 @@ test("should enroll an assistant in an existing course in canvas", async (t) => 
     member: [assistantId],
   };
 
-  const [{ resp }] = await handleMessages(message);
-  await canvasApi.pollUntilSisComplete(resp.id);
-  const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
+  const result = await handleMessage(message);
+
+  t.equal(result.type, "group", "`handleMessage` result.type should be group");
+  await canvasApi.pollUntilSisComplete(result.group.sisImportId);
+  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
   t.equal(enrollments[0].sis_user_id, assistantId);
 });
 
 test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async (t) => {
-  t.plan(2);
-  const muId = 17839; // Miljöutbildningen
-  const ckId = 1; // Canvas at KTH
+  t.plan(3);
 
   // Create the "employee" in Canvas
   const employeeId = await createUser();
@@ -78,25 +78,28 @@ test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async 
     member: [employeeId],
   };
 
-  const [{ resp }] = await handleMessages(message);
-  await canvasApi.pollUntilSisComplete(resp.id);
+  const result = await handleMessage(message);
+  t.equal(result.type, "group", "`handleMessage` result.type should be group");
+  await canvasApi.pollUntilSisComplete(result.group.sisImportId);
 
   const muEnrollments = await canvasApi.getSectionEnrollments(
-    muId,
-    "app.katalog3.A.section1"
+    "app.katalog3.A.section1",
+    employeeId
   );
   const ckEnrollments = await canvasApi.getSectionEnrollments(
-    ckId,
-    "app.katalog3.A.section2"
+    "app.katalog3.A.section2",
+    employeeId
   );
 
-  t.ok(
-    muEnrollments.find((e) => e.user.sis_user_id === employeeId),
+  t.equal(
+    muEnrollments.length,
+    1,
     `The user ${employeeId} has been enrolled in Miljöutbildningen`
   );
 
   t.ok(
-    ckEnrollments.find((e) => e.user.sis_user_id === employeeId),
+    ckEnrollments.length,
+    1,
     `The user ${employeeId} has been enrolled in Canvas at KTH`
   );
 });
@@ -115,15 +118,15 @@ test("should NOT enroll a re-registered student in an existing course in Canvas"
     member: [studentId],
   };
 
-  await handleMessages(message);
+  await handleMessage(message);
   await promisify(setTimeout)(5000);
 
-  const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
+  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
   t.deepEqual(enrollments, []);
 });
 
 test("should enroll a student in an existing course", async (t) => {
-  t.plan(1);
+  t.plan(2);
   const cc0 = "A" + randomstring.generate(1);
   const cc1 = randomstring.generate(4);
 
@@ -136,10 +139,11 @@ test("should enroll a student in an existing course", async (t) => {
     member: [studentId],
   };
 
-  const [{ resp }] = await handleMessages(message);
-  await canvasApi.pollUntilSisComplete(resp.id);
+  const result = await handleMessage(message);
+  t.equal(result.type, "group", "`handleMessage` result.type should be group");
+  await canvasApi.pollUntilSisComplete(result.group.sisImportId);
 
-  const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
+  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
   t.equal(enrollments[0].sis_user_id, studentId);
 });
 
@@ -160,16 +164,16 @@ test("should enroll TA:s for an f-course", async (t) => {
     member: [assistantId],
   };
 
-  const [{ resp }] = await handleMessages(message);
-  t.ok(resp);
-  await canvasApi.pollUntilSisComplete(resp.id);
+  const result = await handleMessage(message);
+  t.equal(result.type, "group", "`handleMessage` result.type should be group");
+  await canvasApi.pollUntilSisComplete(result.group.sisImportId);
 
-  const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
+  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
   t.equal(enrollments[0].sis_user_id, assistantId);
 });
 
 test("should not enroll an antagen", async (t) => {
-  t.plan(1);
+  t.plan(3);
   const cc0 = "A" + randomstring.generate(1);
   const cc1 = randomstring.generate(4);
 
@@ -182,9 +186,11 @@ test("should not enroll an antagen", async (t) => {
     member: [studentId],
   };
 
-  await handleMessages(message);
+  const result = await handleMessage(message);
+  t.equal(result.type, "group", "`handleMessage` result.type should be group");
+  t.equal(result.group.sisImportId, null);
 
   await promisify(setTimeout)(5000);
-  const enrollments = await canvasApi.getEnrollments(canvasCourse.id);
+  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
   t.deepEqual(enrollments, []);
 });

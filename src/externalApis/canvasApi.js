@@ -74,10 +74,10 @@ async function getCourseEnrollments(courseId) {
   return canvas.listItems(`courses/${courseId}/enrollments`).toArray();
 }
 
-async function getSectionEnrollments(courseId, sisSectionId) {
+async function getSectionEnrollments(sisSectionId, sisUserId) {
   return canvas
-    .listPages(`courses/${courseId}/enrollments`, {
-      sis_section_id: sisSectionId,
+    .listItems(`sections/sis_section_id:${sisSectionId}/enrollments`, {
+      sis_user_id: sisUserId,
     })
     .toArray();
 }
