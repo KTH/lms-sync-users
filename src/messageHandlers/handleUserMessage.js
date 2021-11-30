@@ -68,7 +68,7 @@ module.exports = async function handleUserMessage(message) {
   const user = await canvasApi.updateUser(userFromCanvas.id, canvasObject);
   const primaryLogin = await canvasApi.getPrimaryLoginId(userFromCanvas);
 
-  await canvasApi.updateLogin(userFromCanvas.id, primaryLogin.id, canvasObject);
+  await canvasApi.updateLogin(primaryLogin.id, canvasObject);
   log.info(`User ${message.kthid} updated in Canvas`);
   return { action: "update", id: user.id };
 };

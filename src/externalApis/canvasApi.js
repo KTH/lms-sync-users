@@ -42,8 +42,8 @@ async function getPrimaryLoginId(user) {
   return allLogins.find((l) => l.unique_id === user.login_id);
 }
 
-async function updateLogin(userId, loginId, data) {
-  return canvas.request(`users/${userId}/logins/${loginId}`, "PUT", data);
+async function updateLogin(loginId, data) {
+  return canvas.request(`accounts/1/logins/${loginId}`, "PUT", data);
 }
 
 async function sendEnrollments(path) {
