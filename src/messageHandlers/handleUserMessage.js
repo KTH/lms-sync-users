@@ -15,22 +15,22 @@ function shouldBeHandled(message) {
 module.exports = async function handleUserMessage(message) {
   if (!shouldBeHandled(message)) {
     log.info("Message ignored. We don't handle users with these affiliations.");
-    return { action: "ignore" };
+    return { action: "ignore", id: null };
   }
 
   if (!message.kthid) {
     log.info("Message ignored. Missing field [kthid]");
-    return { action: "ignore" };
+    return { action: "ignore", id: null };
   }
 
   if (!message.username) {
     log.info("Message ignored. Missing field [username]");
-    return { action: "ignore" };
+    return { action: "ignore", id: null };
   }
 
   if (!message.given_name && !message.family_name) {
     log.info("Message ignored. Missing either [given_name] or [family_name]");
-    return { action: "ignore" };
+    return { action: "ignore", id: null };
   }
 
   const canvasObject = {
