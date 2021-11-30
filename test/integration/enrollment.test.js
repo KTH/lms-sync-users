@@ -159,6 +159,7 @@ test("should enroll TA:s for an f-course", async (t) => {
   const assistantId = await createUser();
 
   const message = {
+    ugClass: "group",
     kthid: "u219zuii",
     ug1Name: `edu.courses.${cc0}.${courseCode}.20171.1.assistants`,
     member: [assistantId],
