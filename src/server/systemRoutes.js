@@ -3,16 +3,14 @@
  */
 const got = require("got");
 const express = require("express");
-const moment = require("moment");
 const log = require("skog");
 const { getRootAccount } = require("../externalApis/canvasApi");
 const packageFile = require("../../package.json");
 
 const router = express.Router();
 
-const [waitAmount, waitUnit] = [10, "hours"];
-const history = require("../../messages/history");
 const version = require("../../config/version");
+const { getLatestMessageTimestamp } = require("../messageConsumer");
 
 /* GET /_about
  * About page
@@ -56,31 +54,36 @@ async function checkCanvasKey() {
   }
 }
 
+function checkIdle() {
+  const TEN_HOURS = 10 * 3600 * 1000;
+  const lastMessage = getLatestMessageTimestamp();
+  const idleTime = new Date() - lastMessage;
+
+  return idleTime < TEN_HOURS;
+}
+
 async function _monitor(req, res) {
   const canvasOk = await checkCanvasStatus();
   const canvasKeyOk = await checkCanvasKey();
-  res.setHeader("Content-Type", "text/plain");
-  const checkTimeAgainst = moment().subtract(waitAmount, waitUnit);
-  const idleTimeOk = history.idleTimeStart.isAfter(checkTimeAgainst);
+  const idleTimeOk = checkIdle();
 
-  log.info(
-    `checking idle time: last time a message was read was: ${history.idleTimeStart}, compare this to now minus some predifined time: ${checkTimeAgainst}`
-  );
+  res.setHeader("Content-Type", "text/plain");
+
   const statusStr = [
     `APPLICATION_STATUS: ${idleTimeOk && canvasKeyOk ? "OK" : "ERROR"} ${
       packageFile.name
     }-${version.jenkinsBuild}`,
     `READ MESSAGE FROM AZURE: ${
       idleTimeOk
-        ? `OK. The server has waited less then ${waitAmount} ${waitUnit} for a message.`
-        : `ERROR. The server has not received a message in the last ${waitAmount} ${waitUnit}`
+        ? "OK. The server has waited less than 10 hours for a message."
+        : "ERROR. The server has not received a message in the last 10 hours"
     }`,
     `CANVAS: ${canvasOk ? "OK" : "Canvas is down"}`,
     `CANVASKEY: ${
       canvasKeyOk ? "OK" : 'Invalid access token (in case if CANVAS is "OK")'
     }`,
   ].join("\n");
-  log.info("monitor page displays:", statusStr);
+
   res.send(statusStr);
 }
 
