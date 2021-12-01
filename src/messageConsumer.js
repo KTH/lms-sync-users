@@ -44,9 +44,7 @@ let connection;
 
 async function start(reconnect = true) {
   reconnectClosedConnection = reconnect;
-  log.info(
-    `Connecting to the following azure service bus: ${process.env.AZURE_SERVICE_BUS_URL}`
-  );
+  log.info(`Starting connection: ${process.env.AZURE_SERVICE_BUS_URL}`);
   connection = container.connect({
     transport: "tls",
     host: process.env.AZURE_SERVICE_BUS_URL,
@@ -61,7 +59,7 @@ async function start(reconnect = true) {
 }
 
 async function stop() {
-  log.info("Closing all existing connections.");
+  log.debug("Closing all existing connections.");
 
   if (connection) {
     connection.close();
@@ -122,8 +120,8 @@ async function receiveMessage(message) {
 }
 
 container.on("connection_open", (context) => {
-  log.info(
-    `Connection opened. Opening receiver for subscription: ${process.env.AZURE_SUBSCRIPTION_NAME} @ ${process.env.AZURE_SUBSCRIPTION_PATH}`
+  log.debug(
+    `Connection opened to ${process.env.AZURE_SUBSCRIPTION_NAME} @ ${process.env.AZURE_SUBSCRIPTION_PATH}`
   );
 
   context.connection.open_receiver({
@@ -140,11 +138,11 @@ container.on("connection_open", (context) => {
 });
 
 container.on("connection_close", () => {
-  log.warn("Connection was closed!");
-
   if (reconnectClosedConnection) {
-    log.debug("Attempting to connect to azure once more!");
+    log.debug("Connection closed. Restarting");
     start();
+  } else {
+    log.debug("Connection was closed!");
   }
 });
 
@@ -161,21 +159,24 @@ container.on("disconnected", (context) => {
 });
 
 container.on("receiver_open", (context) => {
-  log.debug("Receiver was opened.");
+  log.info("Receiver opened successfully. Starting to receive messages");
   log.debug(`Adding ${CREDIT_INCREMENT} credit(s).`);
   context.receiver.add_credit(CREDIT_INCREMENT);
 });
 
-container.on("receiver_close", (context) => {
-  log.warn("Receiver was closed!");
-  log.warn(context.receiver.remote.detach);
+container.on("receiver_close", () => {
+  log.debug("Receiver was closed!");
 });
 
 container.on("receiver_error", () => {
-  log.warn("Receiver had an error!");
+  // Note: We are not printing the `err` object because it is unreadable.
+  // log.error(err);
 
   if (reconnectClosedConnection) {
+    log.error("Error in receiver. Connection is going to be restarted");
     stop();
+  } else {
+    log.error("Error in receiver. Connection is going to be closed");
   }
 });
 

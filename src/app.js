@@ -1,6 +1,6 @@
 require("dotenv").config();
 require("@kth/reqvars").check();
-require("skog").init({
+require("skog").init.pino({
   app: "lms-sync-users",
 });
 
