@@ -103,13 +103,6 @@ async function receiveMessage(message) {
     };
   }
 
-  const enqueuedTime = message.message_annotations["x-opt-enqueued-time"];
-
-  log.info({
-    "metric.timeInQueue": Date.now() - enqueuedTime,
-    "metric.handleMessage": 1,
-  });
-
   return handleMessage(messageBody).catch((err) => {
     throw new MessageError(
       "handle_message_error",
