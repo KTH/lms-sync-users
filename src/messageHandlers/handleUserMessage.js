@@ -1,9 +1,7 @@
 const log = require("skog");
 const canvasApi = require("../externalApis/canvasApi");
 
-function shouldBeHandled(message) {
-  const affiliations = message.affiliation;
-
+function containsHandledAffiliations(affiliations) {
   return (
     affiliations.includes("employee") ||
     affiliations.includes("student") ||
@@ -13,7 +11,7 @@ function shouldBeHandled(message) {
 }
 
 module.exports = async function handleUserMessage(message) {
-  if (!shouldBeHandled(message)) {
+  if (!containsHandledAffiliations(message.affiliation)) {
     log.info("Message ignored. We don't handle users with these affiliations.");
     return { action: "ignore", id: null };
   }
