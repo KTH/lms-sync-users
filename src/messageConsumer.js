@@ -95,6 +95,7 @@ async function receiveMessage(message) {
   }
 
   const messageBody = JSON.parse(Buffer.from(message.body.content).toString());
+  log.info("New message", { body: messageBody });
 
   if (!messageBody) {
     log.info("Message is empty or undefined, deleting from queue...");
