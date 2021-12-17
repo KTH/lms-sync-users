@@ -50,7 +50,8 @@ async function sendEnrollments(path) {
   return canvas.sisImport(path);
 }
 
-/* The following functions are used mainly in tests */
+/* The following functions are used only in tests
+   TODO: make it more obvious! */
 
 async function createCourse(accountId, course) {
   return canvas
