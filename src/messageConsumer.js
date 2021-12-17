@@ -169,7 +169,11 @@ container.on("message", async (context) => {
     );
     log.debug("Consumed 1 credit. ");
 
-    const result = await receiveMessage(context.message);
+    const result = await log.child(
+      { message_id: context.message.message_id },
+      () => receiveMessage(context.message)
+    );
+
     eventEmitter.emit("message_processed", result);
     context.delivery.accept();
   } catch (err) {
