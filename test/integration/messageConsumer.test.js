@@ -69,14 +69,9 @@ async function sendAndConsumeMessage(message) {
         resolve(result);
       });
     });
-
+  } finally {
     messageConsumer.stop();
     await deleteTopic(topicName);
-  } catch (err) {
-    messageConsumer.stop();
-    await deleteTopic(topicName);
-
-    throw err;
   }
 }
 
