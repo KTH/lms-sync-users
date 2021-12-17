@@ -15,7 +15,7 @@ const { getLatestMessageTimestamp } = require("../messageConsumer");
 /* GET /_about
  * About page
  */
-function _about(req, res) {
+function aboutHandler(req, res) {
   res.setHeader("Content-Type", "text/plain");
   res.send(`
     packageFile.name:${packageFile.name}
@@ -23,13 +23,11 @@ function _about(req, res) {
     packageFile.description:${packageFile.description}
     version.gitBranch:${version.gitBranch}
     version.gitCommit:${version.gitCommit}
-    version.jenkinsBuild:${version.jenkinsBuild}
     version.dockerName:${version.dockerName}
-    version.dockerVersion:${version.dockerVersion}
-    version.jenkinsBuildDate:${version.jenkinsBuildDate}`);
+    version.dockerVersion:${version.dockerVersion}`);
 }
 
-async function checkCanvasStatus() {
+async function _checkCanvasStatus() {
   try {
     const { body } = await got(
       "http://nlxv32btr6v7.statuspage.io/api/v2/status.json",
@@ -44,7 +42,7 @@ async function checkCanvasStatus() {
   }
 }
 
-async function checkCanvasKey() {
+async function _checkCanvasKey() {
   try {
     await getRootAccount();
     return true;
@@ -54,7 +52,7 @@ async function checkCanvasKey() {
   }
 }
 
-function checkIdle() {
+function _checkIdle() {
   const TEN_HOURS = 10 * 3600 * 1000;
   const lastMessage = getLatestMessageTimestamp();
   const idleTime = new Date() - lastMessage;
@@ -62,17 +60,17 @@ function checkIdle() {
   return idleTime < TEN_HOURS;
 }
 
-async function _monitor(req, res) {
-  const canvasOk = await checkCanvasStatus();
-  const canvasKeyOk = await checkCanvasKey();
-  const idleTimeOk = checkIdle();
+async function monitorHandler(req, res) {
+  const canvasOk = await _checkCanvasStatus();
+  const canvasKeyOk = await _checkCanvasKey();
+  const idleTimeOk = _checkIdle();
 
   res.setHeader("Content-Type", "text/plain");
 
   const statusStr = [
     `APPLICATION_STATUS: ${idleTimeOk && canvasKeyOk ? "OK" : "ERROR"} ${
       packageFile.name
-    }-${version.jenkinsBuild}`,
+    }`,
     `READ MESSAGE FROM AZURE: ${
       idleTimeOk
         ? "OK. The server has waited less than 10 hours for a message."
@@ -87,11 +85,11 @@ async function _monitor(req, res) {
   res.send(statusStr);
 }
 
-router.get("/_monitor", _monitor);
-router.get("/_monitor_all", _monitor);
+router.get("/_monitor", monitorHandler);
+router.get("/_monitor_all", monitorHandler);
 
-router.get("/_monitor_core", _monitor);
-router.get("/_about", _about);
+router.get("/_monitor_core", monitorHandler);
+router.get("/_about", aboutHandler);
 
 router.get("/", (req, res) => {
   res.redirect(`${process.env.PROXY_PREFIX_PATH}/_monitor`);
