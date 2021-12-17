@@ -82,8 +82,8 @@ async function getSectionEnrollments(sisSectionId, sisUserId) {
     .toArray();
 }
 
-async function pollUntilSisComplete(sisImportId, initialWait = 100) {
-  for (let i = 1; i < 60; i++) {
+async function pollUntilSisComplete(sisImportId, secondsToWait = 120) {
+  for (let i = 1; i < secondsToWait; i++) {
     // eslint-disable-next-line no-await-in-loop
     const sisImport = await canvas
       .get(`accounts/1/sis_imports/${sisImportId}`)
@@ -93,10 +93,8 @@ async function pollUntilSisComplete(sisImportId, initialWait = 100) {
       return sisImport;
     }
 
-    const waitingTime = initialWait * 2 ** i;
-
     // eslint-disable-next-line no-await-in-loop
-    await new Promise((resolve) => setTimeout(resolve, waitingTime));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 
   throw new Error(
