@@ -67,7 +67,7 @@ async function stop() {
 }
 
 /**
- *
+ * @param {object} serviceBusMessage
  * @returns {object} An object with the following properties:
  * - type: type of the message. It can be "user", "group", "other" or "empty".
  * - if type is "user", the following properties are available:
@@ -77,10 +77,12 @@ async function stop() {
  *   - group.name          group name in UG
  *   - group.sisImportId   Canvas SIS Import ID
  */
-async function receiveMessage(message) {
+async function receiveMessage(serviceBusMessage) {
   latestMessageTime = new Date();
 
-  const messageBody = JSON.parse(Buffer.from(message.body.content).toString());
+  const messageBody = JSON.parse(
+    Buffer.from(serviceBusMessage.body.content).toString()
+  );
   log.info("New message", { body: messageBody });
 
   if (!messageBody) {
