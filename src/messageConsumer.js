@@ -80,20 +80,6 @@ async function stop() {
 async function receiveMessage(message) {
   latestMessageTime = new Date();
 
-  if (!message.body?.typecode) {
-    throw new MessageError(
-      "missing_typecode",
-      "The message is missing a typecode."
-    );
-  }
-
-  if (message.body?.typecode !== 117) {
-    throw new MessageError(
-      "wrong_typecode",
-      `Field "typecode" in message must be 117. Received ${message.body.typecode} instead`
-    );
-  }
-
   const messageBody = JSON.parse(Buffer.from(message.body.content).toString());
   log.info("New message", { body: messageBody });
 
@@ -185,21 +171,8 @@ container.on("message", async (context) => {
     eventEmitter.emit("message_processed", result);
     context.delivery.accept();
   } catch (err) {
-    // If the message is missing typecode, log an error but not mark the message
-    // as failed
-    if (err.type === "missing_typecode" || err.type === "wrong_typecode") {
-      log.error(err, formatErrorMessage(err));
+    log.error(err.err || err, formatErrorMessage(err));
 
-      context.delivery.accept();
-      return;
-    }
-
-    // Other type of errors: return the message to the queue and log
-    if (err.err) {
-      log.error(err.err, formatErrorMessage(err));
-    } else {
-      log.error(err, formatErrorMessage(err));
-    }
     context.delivery.modified({
       deliveryFailed: true,
       undeliverable_here: false,
