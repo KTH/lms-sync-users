@@ -119,7 +119,32 @@ module.exports = async function handleGroupMessage(message) {
   serializer.pipe(writer);
 
   const enrollments = getEnrollmentCsvData(groupName);
+/*
+   Employees to internal courses as students
+   Example: group app.katalog3.T
+   Members ['aaaa','bbbb']
+    send to Canvas:
+       sis_section_id,role,status,sis_user_id
+       app.katalog3.T.sektion1,student,active,aaaa
+       ..
+       app.katalog3.T.sektion5,student,active,aaaa
+       app.katalog3.T.sektion1,student,active,bbbb
+       ..
+       app.katalog3.T.sektion5,student,active,bbbb
 
+   Studenter 
+   Example: group ladok2.kurser.AA.1111.registrerade_20211.1
+   Members ['ccc','ddd']
+    send to Canvas:
+       sis_section_id,role,status,sis_user_id
+       AA1111VT211,student,active,ccc
+       AA1111VT211,student,active,ddd
+       AA1111VT211,antagen,deleted,ccc
+       AA1111VT211,antagen,deleted,ddd
+
+  TODO: Teachers
+
+   */ 
   if (enrollments.length === 0) {
     return { sisImportId: null };
   }
