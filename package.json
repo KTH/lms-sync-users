@@ -10,8 +10,8 @@
     "test": "npm run test:lint && npm run test:format",
     "test:format": "prettier --check .",
     "test:lint": "eslint test config src",
-    "start": "cross-env NODE_ENV=development nodemon . | pino-pretty",
-    "debug": "NODE_ENV=development node --nolazy --inspect-brk=9229 . | pino-pretty -o short"
+    "start": "cross-env NODE_ENV=development nodemon . | pino-pretty -e options,response -o '{msg}' --ignore options,pid,hostname,app,req_id --singleLine --translateTime 'HH:MM:ss.l'",
+    "debug": "NODE_ENV=development node --nolazy --inspect-brk=9229 . | pino-pretty -e options,response -o '{msg}' --ignore options,pid,hostname,app,req_id --singleLine --translateTime 'HH:MM:ss.l'"
   },
   "dependencies": {
     "@kth/canvas-api": "^4.0.2",
