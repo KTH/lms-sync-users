@@ -62,9 +62,9 @@ test("should enroll a course responsible in an existing course in canvas", async
 
   t.equal(result.type, "group", "`handleMessage` result.type should be group");
   await canvasApi.pollUntilSisComplete(result.group.sisImportId);
-  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
-  t.equal(enrollments[0].sis_user_id, user);
-  t.equal(enrollments[0].role, 'Course Responsible');
+  const [enrollment] = await canvasApi.getCourseEnrollments(canvasCourse.id);
+  t.equal(enrollment.sis_user_id, user);
+  t.equal(enrollment.role, 'Course Responsible');
 });
 
 test("should enroll a teacher in an existing course in canvas", async (t) => {
@@ -86,13 +86,13 @@ test("should enroll a teacher in an existing course in canvas", async (t) => {
 
   t.equal(result.type, "group", "`handleMessage` result.type should be group");
   await canvasApi.pollUntilSisComplete(result.group.sisImportId);
-  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
-  t.equal(enrollments[0].sis_user_id, user);
-  t.equal(enrollments[0].role, 'TeacherEnrollment');
+  const [enrollment] = await canvasApi.getCourseEnrollments(canvasCourse.id);
+  t.equal(enrollment.sis_user_id, user);
+  t.equal(enrollment.role, 'TeacherEnrollment');
 });
 
 test("should enroll an assistant in an existing course in canvas", async (t) => {
-  t.plan(2);
+  t.plan(3);
 
   // Create the "existing course" and the "assistant" in Canvas
   // Course code should be 6 characters long
@@ -110,8 +110,9 @@ test("should enroll an assistant in an existing course in canvas", async (t) => 
 
   t.equal(result.type, "group", "`handleMessage` result.type should be group");
   await canvasApi.pollUntilSisComplete(result.group.sisImportId);
-  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
-  t.equal(enrollments[0].sis_user_id, user);
+  const [enrollment] = await canvasApi.getCourseEnrollments(canvasCourse.id);
+  t.equal(enrollment.sis_user_id, user);
+  t.equal(enrollment.role, 'TaEnrollment');
 });
 
 test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async (t) => {
