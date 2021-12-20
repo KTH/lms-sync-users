@@ -10,6 +10,15 @@ const temporalDirectory = fs.mkdtempSync(
   path.join(os.tmpdir(), "lms-sync-users-")
 );
 
+// Example: ladok.kurser.SF.1624.registrerade_20211.1
+const REGEX_STUDENTS_GROUP =
+  /ladok2\.kurser\.(?<courseCodePrefix>\w{2,3})\.(?<courseCodeSuffix>\w{4})\.registrerade_(?<startTerm>\d{5})\.(?<roundId>\w)/;
+// Example: edu.courses.SF.SF1624.20211.1.teachers
+const REGEX_TEACHERS_GROUP =
+  /edu\.courses\.\w{2,3}\.(?<courseCode>\w{6,7})\.(?<startTerm>\d{5})\.(?<roundId>\w)\.(?<roleName>\w+)/;
+// Example: app.katalog3.T
+const REGEX_EMPLOYEES_GROUP = /app\.katalog3\.(?<department>\w)/;
+
 function createSisCourseId({ courseCode, startTerm, roundId }) {
   const termNum = startTerm[4];
   const shortYear = `${startTerm[2]}${startTerm[3]}`;
@@ -18,95 +27,84 @@ function createSisCourseId({ courseCode, startTerm, roundId }) {
   return `${courseCode}${term}${shortYear}${roundId}`;
 }
 
-function getTeacherEnrollmentCsvData(group) {
-  // Example: edu.courses.AA.AA1111.20211.1.teachers
-  const teachersGroupRegEx =
-    /edu\.courses\.\w{2,3}\.(?<courseCode>\w{6,7})\.(?<startTerm>\d{5})\.(?<roundId>\w)\.(?<roleName>\w+)/;
-
-  const roleIds = {
-    teachers: 4,
-    assistants: 5,
-    courseresponsible: 9,
-  };
-
-  const match = group.match(teachersGroupRegEx);
-
-  if (!match) {
-    return [];
-  }
-
-  const { courseCode, startTerm, roundId, roleName } = match.groups;
-  const sisId = createSisCourseId({ courseCode, startTerm, roundId });
-
-  return [
-    {
-      section_id: sisId,
-      status: "active",
-      role_id: roleIds[roleName],
-    },
-  ];
-}
-
-function getStudentEnrollmentCsvData(group) {
-  // Example: ladok2.kurser.AA.1111.registrerade_20211.1
-  const studentsGroupRegEx =
-    /ladok2\.kurser\.(?<courseCodePrefix>\w{2,3})\.(?<courseCodeSuffix>\w{4})\.registrerade_(?<startTerm>\d{5})\.(?<roundId>\w)/;
-
-  const match = group.match(studentsGroupRegEx);
-
-  if (!match) {
-    return [];
-  }
-
+function convertToSudentEnrollments(ugGroupName, members = []) {
   const { courseCodePrefix, courseCodeSuffix, startTerm, roundId } =
-    match.groups;
+    ugGroupName.match(REGEX_STUDENTS_GROUP).groups;
+
   const courseCode = `${courseCodePrefix}${courseCodeSuffix}`;
   const sisId = createSisCourseId({ courseCode, startTerm, roundId });
 
-  return [
+  return members.flatMap((kthId) => [
     {
       section_id: sisId,
+      user_id: kthId,
       status: "active",
       role_id: 3,
     },
+
+    // This function does always return a "delete antagna" enrollment without
+    // checking if the antagna is actually enrolled in Canvas
     {
       section_id: sisId,
+      user_id: kthId,
       status: "deleted",
       role_id: 25,
     },
-  ];
+  ]);
 }
 
-function getEmployeeEnrollmentCsvData(group) {
-  // Example: app.katalog3.T
-  const employeesGroupRegEx = /app\.katalog3\.(?<department>\w)/;
-  const match = group.match(employeesGroupRegEx);
+// TODO: explain this function
+function convertToEmployeeEnrollments(ugGroupName, members = []) {
+  return members.flatMap((kthId) =>
+    [1, 2, 3, 4, 5].map((i) => ({
+      section_id: `${ugGroupName}.section${i}`,
+      user_id: kthId,
+      role_id: 3,
+      status: "active",
+    }))
+  );
+}
 
-  if (!match) {
-    return [];
+function convertToTeacherEnrollments(ugGroupName, members) {
+  const match = ugGroupName.match(REGEX_TEACHERS_GROUP);
+  const { courseCode, startTerm, roundId, roleName } = match.groups;
+  const sisId = createSisCourseId({ courseCode, startTerm, roundId });
+  let roleId;
+
+  if (roleName === "teachers") {
+    roleId = 4;
+  } else if (roleName === "assistants") {
+    roleId = 5;
+  } else if (roleName === "courseresponsible") {
+    roleId = 9;
+  } else {
+    // TODO: enhance it
+    throw new Error(`Unknown roleName ${roleName}`);
   }
 
-  return [1, 2, 3, 4, 5].map((i) => ({
-    section_id: `${group}.section${i}`,
-    role_id: 3,
+  return members.map((kthId) => ({
+    section_id: sisId,
+    user_id: kthId,
     status: "active",
+    role_id: roleId,
   }));
 }
 
-/**
- * Given an UG group, returns an array of "enrollment data" i.e. objects with
- * the columns "sis_section_id", "status", "role_id" for enrollments
- */
-function getEnrollmentCsvData(group) {
-  const teacherEnrollmentData = getTeacherEnrollmentCsvData(group);
-  const studentEnrollmentData = getStudentEnrollmentCsvData(group);
-  const employeeEnrollmentData = getEmployeeEnrollmentCsvData(group);
+/** Return the group category */
+function getGroupCategory(groupName) {
+  if (REGEX_STUDENTS_GROUP.test(groupName)) {
+    return "student";
+  }
 
-  return [
-    ...teacherEnrollmentData,
-    ...studentEnrollmentData,
-    ...employeeEnrollmentData,
-  ];
+  if (REGEX_TEACHERS_GROUP.test(groupName)) {
+    return "teacher";
+  }
+
+  if (REGEX_EMPLOYEES_GROUP.test(groupName)) {
+    return "employee";
+  }
+
+  return "other";
 }
 
 module.exports = async function handleGroupMessage(message) {
@@ -114,48 +112,28 @@ module.exports = async function handleGroupMessage(message) {
   const fileName = `${groupName}-${Date.now()}.csv`;
   const filePath = path.join(temporalDirectory, fileName);
 
+  const category = getGroupCategory(groupName);
   const writer = fs.createWriteStream(filePath);
   const serializer = csv.format({ headers: true });
-  serializer.pipe(writer);
 
-  const enrollments = getEnrollmentCsvData(groupName);
-/*
-   Employees to internal courses as students
-   Example: group app.katalog3.T
-   Members ['aaaa','bbbb']
-    send to Canvas:
-       sis_section_id,role,status,sis_user_id
-       app.katalog3.T.sektion1,student,active,aaaa
-       ..
-       app.katalog3.T.sektion5,student,active,aaaa
-       app.katalog3.T.sektion1,student,active,bbbb
-       ..
-       app.katalog3.T.sektion5,student,active,bbbb
-
-   Studenter 
-   Example: group ladok2.kurser.AA.1111.registrerade_20211.1
-   Members ['ccc','ddd']
-    send to Canvas:
-       sis_section_id,role,status,sis_user_id
-       AA1111VT211,student,active,ccc
-       AA1111VT211,student,active,ddd
-       AA1111VT211,antagen,deleted,ccc
-       AA1111VT211,antagen,deleted,ddd
-
-  TODO: Teachers
-
-   */ 
-  if (enrollments.length === 0) {
+  if (category === "other") {
     return { sisImportId: null };
   }
 
-  for (const enrollment of enrollments) {
-    for (const userId of members) {
-      serializer.write({
-        ...enrollment,
-        user_id: userId,
-      });
-    }
+  serializer.pipe(writer);
+
+  if (category === "teacher") {
+    convertToTeacherEnrollments(groupName, members).forEach((enr) =>
+      serializer.write(enr)
+    );
+  } else if (category === "student") {
+    convertToSudentEnrollments(groupName, members).forEach((enr) =>
+      serializer.write(enr)
+    );
+  } else if (category === "employee") {
+    convertToEmployeeEnrollments(groupName, members).forEach((enr) =>
+      serializer.write(enr)
+    );
   }
 
   serializer.end();
