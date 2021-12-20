@@ -77,7 +77,7 @@ function convertToSudentEnrollments(ugGroupName, members = []) {
  * app.katalog3.J.section2 ( 1,726 users)
  * app.katalog3.M.section2 ( 1,088 users)
  * app.katalog3.S.section2 ( 1,176 users)
- * app.katalog3.T.section2 ( 962 users) 
+ * app.katalog3.T.section2 ( 962 users)
  *
  * Note that the names of the sections don't include any info about this being the Canvas@KTH course. This is on purpose, so that we maintain a flexibility where the name of the sections is coupled * to the UG group name only, NOT to the course it is being tied to.
  *
