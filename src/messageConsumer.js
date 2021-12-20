@@ -92,13 +92,19 @@ async function receiveMessage(serviceBusMessage) {
     };
   }
 
-  return handleMessage(messageBody).catch((err) => {
-    throw new MessageError(
-      "handle_message_error",
-      "Error handling message",
-      err
-    );
-  });
+  // TODO: Test if get readable messages if `handleMessage` throws something
+  //       (e.g. Canvas throws an error)
+  return handleMessage(messageBody)
+    .then((result) => {
+      log.info("Message was handled", { result });
+    })
+    .catch((err) => {
+      throw new MessageError(
+        "handle_message_error",
+        "Error handling message",
+        err
+      );
+    });
 }
 
 container.on("connection_open", (context) => {
