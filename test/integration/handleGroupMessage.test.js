@@ -43,19 +43,19 @@ async function createFakeUser() {
   return kthId;
 }
 
-test("should enroll an assistant in an existing course in canvas", async (t) => {
+test("should enroll a course responsible in an existing course in canvas", async (t) => {
   t.plan(2);
 
   // Create the "existing course" and the "assistant" in Canvas
   // Course code should be 6 characters long
   const courseCode = "A" + randomstring.generate(5);
-  const assistantId = await createFakeUser();
+  const user = await createFakeUser();
   const canvasCourse = await createFakeCourse(courseCode + "VT171");
 
   const message = {
     ugClass: "group",
-    ug1Name: `edu.courses.SF.${courseCode}.20171.1.assistants`,
-    member: [assistantId],
+    ug1Name: `edu.courses.SF.${courseCode}.20171.1.courseresponsible`,
+    member: [user],
   };
 
   const result = await handleMessage(message);
@@ -63,7 +63,53 @@ test("should enroll an assistant in an existing course in canvas", async (t) => 
   t.equal(result.type, "group", "`handleMessage` result.type should be group");
   await canvasApi.pollUntilSisComplete(result.group.sisImportId);
   const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
-  t.equal(enrollments[0].sis_user_id, assistantId);
+  t.equal(enrollments[0].sis_user_id, user);
+});
+
+test("should enroll a teacher in an existing course in canvas", async (t) => {
+  t.plan(2);
+
+  // Create the "existing course" and the "assistant" in Canvas
+  // Course code should be 6 characters long
+  const courseCode = "A" + randomstring.generate(5);
+  const user = await createFakeUser();
+  const canvasCourse = await createFakeCourse(courseCode + "VT171");
+
+  const message = {
+    ugClass: "group",
+    ug1Name: `edu.courses.SF.${courseCode}.20171.1.teachers`,
+    member: [user],
+  };
+
+  const result = await handleMessage(message);
+
+  t.equal(result.type, "group", "`handleMessage` result.type should be group");
+  await canvasApi.pollUntilSisComplete(result.group.sisImportId);
+  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
+  t.equal(enrollments[0].sis_user_id, user);
+});
+
+test("should enroll an assistant in an existing course in canvas", async (t) => {
+  t.plan(2);
+
+  // Create the "existing course" and the "assistant" in Canvas
+  // Course code should be 6 characters long
+  const courseCode = "A" + randomstring.generate(5);
+  const user = await createFakeUser();
+  const canvasCourse = await createFakeCourse(courseCode + "VT171");
+
+  const message = {
+    ugClass: "group",
+    ug1Name: `edu.courses.SF.${courseCode}.20171.1.assistants`,
+    member: [user],
+  };
+
+  const result = await handleMessage(message);
+
+  t.equal(result.type, "group", "`handleMessage` result.type should be group");
+  await canvasApi.pollUntilSisComplete(result.group.sisImportId);
+  const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
+  t.equal(enrollments[0].sis_user_id, user);
 });
 
 test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async (t) => {
