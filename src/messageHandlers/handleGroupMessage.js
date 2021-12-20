@@ -53,7 +53,36 @@ function convertToSudentEnrollments(ugGroupName, members = []) {
   ]);
 }
 
-// TODO: explain this function
+/**
+ * This function handles a special use case, where each employee at KTH is enrolled in up to five internal courses, each having a course rooms in Canvas.
+ * These internal courses could be the Canvas@KTH course, or an environment course for instance. The exact usage for these internal courses is irrelevant, this implementation doesn't know and doesn't care which these internal courses are.
+ *
+ * The way it works:
+ * In UG there are groups for each school where each employee is added. These groups are:
+ *  app.katalog3.A
+ *  app.katalog3.C
+ *  app.katalog3.J
+ *  app.katalog3.M
+ *  app.katalog3.S
+ *  app.katalog3.T
+ *
+ * Every employee at KTH are added to one of these groups, depending on which school he/she is employed at.
+ *
+ * In Canvas, there are five different sections per above mentioned UG group: one section per supported internal course, per UG group.
+ * These sections can be grouped together within Canvas, so that every employee at KTH is enrolled in each of the internal courses.
+ *
+ * At the time of writing, the following sections are crosslisted into the Canvas@KTH course room:
+ * app.katalog3.A.section2 ( 989 users)
+ * app.katalog3.C.section2 ( 1,320 users)
+ * app.katalog3.J.section2 ( 1,726 users)
+ * app.katalog3.M.section2 ( 1,088 users)
+ * app.katalog3.S.section2 ( 1,176 users)
+ * app.katalog3.T.section2 ( 962 users) 
+ *
+ * Note that the names of the sections don't include any info about this being the Canvas@KTH course. This is on purpose, so that we maintain a flexibility where the name of the sections is coupled * to the UG group name only, NOT to the course it is being tied to.
+ *
+ *
+ */
 function convertToEmployeeEnrollments(ugGroupName, members = []) {
   return members.flatMap((kthId) =>
     [1, 2, 3, 4, 5].map((i) => ({
