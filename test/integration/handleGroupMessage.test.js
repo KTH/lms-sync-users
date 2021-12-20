@@ -147,6 +147,8 @@ test("should enroll a student in an existing course", async (t) => {
   t.equal(enrollments[0].sis_user_id, studentId);
 });
 
+// TODO: add test for teacher and course responsible
+
 test("should enroll TA:s for an f-course", async (t) => {
   t.plan(2);
 
