@@ -89,7 +89,7 @@ async function receiveMessage(serviceBusMessage) {
   const messageBody = JSON.parse(
     Buffer.from(serviceBusMessage.body.content).toString()
   );
-  log.info("New message", { body: messageBody });
+  log.info({ body: messageBody }, "New message");
 
   if (!messageBody) {
     log.info("Message is empty or undefined, deleting from queue...");
