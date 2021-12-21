@@ -1,7 +1,7 @@
 const EventEmitter = require("events");
 const container = require("rhea");
 const log = require("skog");
-const handleMessage = require("./messageHandlers/index");
+const handleMessage = require("./messageHandlers/handleAllMessages");
 
 class MessageError extends Error {
   constructor(type, message, err, messageId) {
