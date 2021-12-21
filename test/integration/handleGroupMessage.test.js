@@ -64,7 +64,7 @@ test("should enroll a course responsible in an existing course in canvas", async
   await canvasApi.pollUntilSisComplete(result.group.sisImportId);
   const [enrollment] = await canvasApi.getCourseEnrollments(canvasCourse.id);
   t.equal(enrollment.sis_user_id, user);
-  t.equal(enrollment.role, 'Course Responsible');
+  t.equal(enrollment.role, "Course Responsible");
 });
 
 test("should enroll a teacher in an existing course in canvas", async (t) => {
@@ -88,7 +88,7 @@ test("should enroll a teacher in an existing course in canvas", async (t) => {
   await canvasApi.pollUntilSisComplete(result.group.sisImportId);
   const [enrollment] = await canvasApi.getCourseEnrollments(canvasCourse.id);
   t.equal(enrollment.sis_user_id, user);
-  t.equal(enrollment.role, 'TeacherEnrollment');
+  t.equal(enrollment.role, "TeacherEnrollment");
 });
 
 test("should enroll an assistant in an existing course in canvas", async (t) => {
@@ -112,7 +112,7 @@ test("should enroll an assistant in an existing course in canvas", async (t) => 
   await canvasApi.pollUntilSisComplete(result.group.sisImportId);
   const [enrollment] = await canvasApi.getCourseEnrollments(canvasCourse.id);
   t.equal(enrollment.sis_user_id, user);
-  t.equal(enrollment.role, 'TaEnrollment');
+  t.equal(enrollment.role, "TaEnrollment");
 });
 
 test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async (t) => {
@@ -222,7 +222,7 @@ test("should enroll TA:s for an f-course", async (t) => {
 
   const enrollments = await canvasApi.getCourseEnrollments(canvasCourse.id);
   t.equal(enrollments[0].sis_user_id, assistantId);
-  t.equal(enrollments[0].role, 'TaEnrollment');
+  t.equal(enrollments[0].role, "TaEnrollment");
 });
 
 test("should not enroll an antagen", async (t) => {

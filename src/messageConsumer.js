@@ -56,6 +56,12 @@ async function start(reconnect = true) {
     reconnect: true,
     reconnect_limit: 100,
   });
+  connection.open_receiver({
+    name: process.env.AZURE_SUBSCRIPTION_NAME,
+    source: {
+      address: process.env.AZURE_SUBSCRIPTION_PATH,
+    },
+  });
 }
 
 async function stop() {
@@ -107,24 +113,6 @@ async function receiveMessage(serviceBusMessage) {
     });
 }
 
-container.on("connection_open", (context) => {
-  log.debug(
-    `Connection opened to ${process.env.AZURE_SUBSCRIPTION_NAME} @ ${process.env.AZURE_SUBSCRIPTION_PATH}`
-  );
-
-  context.connection.open_receiver({
-    name: process.env.AZURE_SUBSCRIPTION_NAME,
-    source: {
-      address: process.env.AZURE_SUBSCRIPTION_PATH,
-      dynamic: false,
-      durable: 2, // NOTE: Value taken from rhea official code example for durable subscription reader.
-      expiry_policy: "never",
-    },
-    autoaccept: false,
-    credit_window: 0,
-  });
-});
-
 container.on("connection_close", () => {
   if (reconnectClosedConnection) {
     log.debug("Connection closed. Restarting");
@@ -173,7 +161,6 @@ container.on("message", async (context) => {
     log.debug(
       `logging azure library ids. container id: ${context.container.id}, identifier: ${context.connection.amqp_transport.identifier}`
     );
-    log.debug("Consumed 1 credit. ");
 
     const result = await log.child(
       { message_id: context.message.message_id },
@@ -189,9 +176,6 @@ container.on("message", async (context) => {
       deliveryFailed: true,
       undeliverable_here: false,
     });
-  } finally {
-    log.debug(`Adding ${CREDIT_INCREMENT} credit(s).`);
-    context.receiver.add_credit(CREDIT_INCREMENT);
   }
 });
 
