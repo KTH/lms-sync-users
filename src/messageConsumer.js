@@ -157,26 +157,25 @@ container.on("receiver_error", () => {
 });
 
 container.on("message", async (context) => {
-  try {
-    log.debug(
-      `logging azure library ids. container id: ${context.container.id}, identifier: ${context.connection.amqp_transport.identifier}`
-    );
+  log.debug(
+    `logging azure library ids. container id: ${context.container.id}, identifier: ${context.connection.amqp_transport.identifier}`
+  );
 
-    const result = await log.child(
-      { message_id: context.message.message_id },
-      () => receiveMessage(context.message)
-    );
-
-    eventEmitter.emit("message_processed", result);
-    context.delivery.accept();
-  } catch (err) {
-    log.error(err.err || err, formatErrorMessage(err));
-
-    context.delivery.modified({
-      deliveryFailed: true,
-      undeliverable_here: false,
-    });
-  }
+  await log.child({ message_id: context.message.message_id }, async () => {
+    try {
+      const result = await receiveMessage(context.message);
+      eventEmitter.emit("message_processed", result);
+      context.delivery.accept();
+    } catch (err) {
+      // log error here to make sure that the error log uses the same pre configured log child as other logs
+      log.error(err.message); // Includes message_id
+      log.error(err.err || err, formatErrorMessage(err)); // Doesn't include message_id
+      context.delivery.modified({
+        deliveryFailed: true,
+        undeliverable_here: false,
+      });
+    }
+  });
 });
 
 module.exports = {
