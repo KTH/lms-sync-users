@@ -1,6 +1,7 @@
 const EventEmitter = require("events");
 const container = require("rhea");
 const log = require("skog");
+
 const handleMessage = require("./messageHandlers/index");
 
 class MessageError extends Error {
@@ -89,7 +90,7 @@ async function receiveMessage(serviceBusMessage) {
   const messageBody = JSON.parse(
     Buffer.from(serviceBusMessage.body.content).toString()
   );
-  log.info("New message", { body: messageBody });
+  log.info({ body: messageBody }, "New message");
 
   if (!messageBody) {
     log.info("Message is empty or undefined, deleting from queue...");
@@ -108,7 +109,7 @@ async function receiveMessage(serviceBusMessage) {
       throw new MessageError(
         "handle_message_error",
         "Error handling message",
-        err
+        `${err.message}, ${err.stack}`
       );
     });
 }
