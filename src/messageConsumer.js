@@ -1,7 +1,7 @@
 const EventEmitter = require("events");
 const container = require("rhea");
 const log = require("skog");
-const handleMessage = require("./messageHandlers/handleAllMessages");
+const handleAllMessages = require("./messageHandlers/handleAllMessages");
 
 class MessageError extends Error {
   constructor(type, message, err, messageId) {
@@ -98,9 +98,9 @@ async function receiveMessage(serviceBusMessage) {
     };
   }
 
-  // TODO: Test if get readable messages if `handleMessage` throws something
+  // TODO: Test if get readable error if `handleAllMessages` throws something
   //       (e.g. Canvas throws an error)
-  return handleMessage(messageBody)
+  return handleAllMessages(messageBody)
     .then((result) => {
       log.info("Message was handled", { result });
     })
