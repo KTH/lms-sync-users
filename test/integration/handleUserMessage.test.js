@@ -1,6 +1,6 @@
 const test = require("tape");
 const randomstring = require("randomstring");
-const handleMessage = require("../../src/messageHandlers");
+const handleMessage = require("../../src/messageHandlers/handleAllMessages");
 const canvasApi = require("../../src/externalApis/canvasApi");
 
 // TODO: Create a unit test that checks what is returned by `handleMessage`

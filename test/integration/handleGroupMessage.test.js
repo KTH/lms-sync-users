@@ -1,7 +1,7 @@
 const test = require("tape");
 const randomstring = require("randomstring");
 const { promisify } = require("util");
-const handleMessage = require("../../src/messageHandlers");
+const handleMessage = require("../../src/messageHandlers/handleAllMessages");
 const canvasApi = require("../../src/externalApis/canvasApi");
 
 async function createFakeCourse(sisCourseId) {
