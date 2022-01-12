@@ -75,7 +75,7 @@ async function sendAndConsumeMessage(message) {
   }
 }
 
-test("messageConsumer should create a new user in canvas", async (t) => {
+test.only("messageConsumer should create a new user in canvas", async (t) => {
   t.plan(2);
   const kthid = randomstring.generate(8);
   const ladokId = randomstring.generate(24);
