@@ -34,6 +34,7 @@ module.exports = async function handleUserMessage(message) {
   const userFromCanvas = await canvasApi.getUser(message.kthid);
 
   if (!userFromCanvas) {
+    log.info("The user doesn't exist in Canvas, create it.");
     const user = await canvasApi.createUser({
       user: {
         name: `${message.given_name} ${message.family_name}`,
@@ -55,6 +56,7 @@ module.exports = async function handleUserMessage(message) {
     return { action: "create", id: user.id };
   }
 
+  log.info("The user exist in Canvas, update it.");
   const user = await canvasApi.updateUser(userFromCanvas.id, {
     user: {
       name: `${message.given_name} ${message.family_name}`,
