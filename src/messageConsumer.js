@@ -14,9 +14,9 @@ class MessageError extends Error {
   }
 }
 
-function formatErrorMessage({ name, type, message }) {
-  return `(${name}${type ? "/" + type : ""} ${message}`;
-}
+// function formatErrorMessage({ name, type, message }) {
+//   return `(${name}${type ? "/" + type : ""} ${message}`;
+// }
 
 let latestMessageTime = new Date();
 
