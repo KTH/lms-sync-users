@@ -27,7 +27,7 @@ function createSisCourseId({ courseCode, startTerm, roundId }) {
   return `${courseCode}${term}${shortYear}${roundId}`;
 }
 
-function convertToSudentEnrollments(ugGroupName, members = []) {
+function convertToStudentEnrollments(ugGroupName, members = []) {
   const { courseCodePrefix, courseCodeSuffix, startTerm, roundId } =
     ugGroupName.match(REGEX_STUDENTS_GROUP).groups;
 
@@ -152,14 +152,17 @@ module.exports = async function handleGroupMessage(message) {
   serializer.pipe(writer);
 
   if (category === "teacher") {
+    log.info("Handle as teacher enrollment");
     convertToTeacherEnrollments(groupName, members).forEach((enr) =>
       serializer.write(enr)
     );
   } else if (category === "student") {
-    convertToSudentEnrollments(groupName, members).forEach((enr) =>
+    log.info("Handle as registered student enrollment");
+    convertToStudentEnrollments(groupName, members).forEach((enr) =>
       serializer.write(enr)
     );
   } else if (category === "employee") {
+    log.info("Handle as internal course enrollment");
     convertToEmployeeEnrollments(groupName, members).forEach((enr) =>
       serializer.write(enr)
     );
