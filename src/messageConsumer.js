@@ -57,6 +57,7 @@ async function start(reconnect = true) {
     reconnect_limit: 100,
   });
   connection.open_receiver({
+    autoaccept: false,
     name: process.env.AZURE_SUBSCRIPTION_NAME,
     source: {
       address: process.env.AZURE_SUBSCRIPTION_PATH,
