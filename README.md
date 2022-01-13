@@ -2,4 +2,6 @@
 
 Real-time synchronization of users from Azure Service Bus Topic to Canvas LMS
 
-#
+## Responsibilities
+TODO: add stuff here
+
