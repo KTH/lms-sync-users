@@ -85,7 +85,11 @@ async function monitorHandler(req, res) {
   res.send(statusStr);
 }
 
-router.get("/_monitor", monitorHandler);
+// router.get("/_monitor", monitorHandler);
+router.get("/_monitor", (req, res) => {
+  res.setHeader("Content-Type", "text/plain");
+  res.send("OK");
+});
 router.get("/_monitor_all", monitorHandler);
 
 router.get("/_monitor_core", monitorHandler);
