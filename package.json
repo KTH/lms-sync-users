@@ -2,29 +2,27 @@
   "//": "The production flag is added in the jenkins build script.",
   "name": "lms-sync-users",
   "description": "Node.js based API template application.",
-  "main": "app.js",
+  "main": "src/app.js",
   "private": true,
   "scripts": {
     "test:integration": "cross-env NODE_ENV=test tape \"test/integration/*.js\" -r dotenv/config | tap-spec",
     "format": "prettier --write .",
     "test": "npm run test:lint && npm run test:format",
     "test:format": "prettier --check .",
-    "test:lint": "eslint *.js server test config messages",
-    "start": "cross-env NODE_ENV=development nodemon app.js",
-    "debug": "NODE_ENV=development node --nolazy --inspect-brk=9229 app.js | bunyan -o short"
+    "test:lint": "eslint test config src",
+    "start": "cross-env NODE_ENV=development nodemon . | pino-pretty -e options,response -o '{msg}' --ignore options,pid,hostname,app,req_id --singleLine --translateTime 'HH:MM:ss.l'",
+    "debug": "NODE_ENV=development node --nolazy --inspect-brk=9229 . | pino-pretty -e options,response -o '{msg}' --ignore options,pid,hostname,app,req_id --singleLine --translateTime 'HH:MM:ss.l'"
   },
   "dependencies": {
-    "@kth/canvas-api": "^3.0.2",
+    "@kth/canvas-api": "^4.0.2",
     "@kth/reqvars": "^2.0.1",
-    "bluebird": "^3.7.2",
-    "bunyan": "^1.8.13",
     "dotenv": "^6.2.0",
     "express": "^4.17.1",
+    "fast-csv": "^4.3.6",
     "got": "^11.8.1",
-    "kth-node-server": "^3.1.2",
-    "moment": "^2.27.0",
+    "pino": "^6.13.3",
     "rhea": "^1.0.12",
-    "urlencode": "^1.1.0"
+    "skog": "^2.1.0"
   },
   "devDependencies": {
     "@kth/eslint-config-kth": "^1.0.10",
@@ -34,6 +32,7 @@
     "cross-env": "^5.2.1",
     "eslint": "^6.8.0",
     "nodemon": "^2.0.3",
+    "pino-pretty": "^7.2.0",
     "prettier": "^2.3.2",
     "proxyquire": "^2.1.3",
     "randomstring": "^1.1.5",
