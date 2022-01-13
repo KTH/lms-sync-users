@@ -97,7 +97,7 @@ test("should not create a new user of affiliation:other in canvas", async (t) =>
 
 test("should update a user in canvas", async (t) => {
   t.plan(1);
-  const kthid = "emiluppdaterar-namn";
+  const kthid = randomstring.generate(8);
   const username = `${kthid}_abc`;
   const ladokId = randomstring.generate(24);
 
@@ -134,7 +134,7 @@ test("should update a user in canvas", async (t) => {
 
 test("should update a user in canvas even if Ladok ID is not supplied", async (t) => {
   t.plan(2);
-  const kthid = "emiluppdaterar-namn";
+  const kthid = randomstring.generate(8);
   const username = `${kthid}_abc`;
   const ladokId = randomstring.generate(24);
 
