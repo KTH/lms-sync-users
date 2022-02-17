@@ -11,6 +11,11 @@ function containsHandledAffiliations(affiliations) {
 }
 
 module.exports = async function handleUserMessage(message) {
+  if (!Array.isArray(message.affiliation)) {
+    log.info("Message ignored. It does not include any affiliation");
+    return { action: "ignore", id: null };
+  }
+
   if (!containsHandledAffiliations(message.affiliation)) {
     log.info("Message ignored. We don't handle users with these affiliations.");
     return { action: "ignore", id: null };
