@@ -169,8 +169,7 @@ container.on("message", async (context) => {
       context.delivery.accept();
     } catch (err) {
       // log error here to make sure that the error log uses the same pre configured log child as other logs
-      log.error(err.message);
-      log.error(err.err || err);
+      log.error({ err }, err.message);
       context.delivery.modified({
         deliveryFailed: true,
         undeliverable_here: false,

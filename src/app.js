@@ -1,8 +1,13 @@
 require("dotenv").config();
 require("@kth/reqvars").check();
-require("skog").init.pino({
-  app: "lms-sync-users",
-});
+require("skog").init.pino(
+  {
+    app: "lms-sync-users",
+  },
+  {
+    timestamp: require("pino").stdTimeFunctions.isoTime,
+  }
+);
 
 const log = require("skog");
 const express = require("express");
