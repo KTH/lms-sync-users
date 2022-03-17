@@ -5,6 +5,12 @@ const log = require("skog");
 const csv = require("fast-csv");
 const canvasApi = require("../externalApis/canvasApi");
 
+// The following id:s are taken from the roles in Canvas, found here: https://canvas.kth.se/api/v1/accounts/1/roles?per_page=100
+const ANTAGEN_STUDENT = 25;
+const REGISTERED_STUDENT = 164;
+const MANUALLY_ADDED_STUDENT = 15;
+const ORIGINAL_STUDENT = 3;
+
 const terms = { 1: "VT", 2: "HT" };
 const temporalDirectory = fs.mkdtempSync(
   path.join(os.tmpdir(), "lms-sync-users-")
@@ -38,17 +44,29 @@ function convertToStudentEnrollments(ugGroupName, members = []) {
     {
       section_id: sisId,
       user_id: kthId,
+      role_id: REGISTERED_STUDENT,
       status: "active",
-      role_id: 3,
     },
-
-    // This function does always return a "delete antagna" enrollment without
-    // checking if the antagna is actually enrolled in Canvas
+    // Remove antagna, since the user is registered he/she shouldn't also be antagen
     {
       section_id: sisId,
       user_id: kthId,
+      role_id: ANTAGEN_STUDENT,
       status: "deleted",
-      role_id: 25,
+    },
+    // Remove manually added student, since the user is registered he/she shouldn't be considered as manually handled anymore
+    {
+      section_id: sisId,
+      user_id: kthId,
+      role_id: MANUALLY_ADDED_STUDENT,
+      status: "deleted",
+    },
+    // Remove the original student role. This is to prevent the users to have double student roles. This is probably temporary, and can be removed once no active course room have any students enrolled with this deprecated role.
+    {
+      section_id: sisId,
+      user_id: kthId,
+      role_id: ORIGINAL_STUDENT,
+      status: "deleted",
     },
   ]);
 }
