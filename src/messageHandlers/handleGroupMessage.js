@@ -151,17 +151,7 @@ module.exports = async function handleGroupMessage(message) {
 
   serializer.pipe(writer);
 
-  if (category === "teacher") {
-    log.info("Handle as teacher enrollment");
-    convertToTeacherEnrollments(groupName, members).forEach((enr) =>
-      serializer.write(enr)
-    );
-  } else if (category === "student") {
-    log.info("Handle as registered student enrollment");
-    convertToStudentEnrollments(groupName, members).forEach((enr) =>
-      serializer.write(enr)
-    );
-  } else if (category === "employee") {
+  if (category === "employee") {
     log.info("Handle as internal course enrollment");
     convertToEmployeeEnrollments(groupName, members).forEach((enr) =>
       serializer.write(enr)
