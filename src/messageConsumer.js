@@ -1,6 +1,6 @@
 const EventEmitter = require("events");
 const container = require("rhea");
-const log = require("skog").default;
+const { default: log, runWithSkog } = require("skog");
 const handleAllMessages = require("./messageHandlers/handleAllMessages");
 
 class MessageError extends Error {
@@ -162,7 +162,7 @@ container.on("message", async (context) => {
     `logging azure library ids. container id: ${context.container.id}, identifier: ${context.connection.amqp_transport.identifier}`
   );
 
-  await log.child({ message_id: context.message.message_id }, async () => {
+  await runWithSkog({ message_id: context.message.message_id }, async () => {
     try {
       const result = await receiveMessage(context.message);
       eventEmitter.emit("message_processed", result);

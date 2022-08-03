@@ -59,7 +59,7 @@ test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async 
     `The user ${employeeId} has been enrolled in Miljöutbildningen`
   );
 
-  t.ok(
+  t.equal(
     ckEnrollments.length,
     1,
     `The user ${employeeId} has been enrolled in Canvas at KTH`
