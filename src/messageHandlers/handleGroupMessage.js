@@ -5,53 +5,12 @@ const log = require("skog");
 const csv = require("fast-csv");
 const canvasApi = require("../externalApis/canvasApi");
 
-const terms = { 1: "VT", 2: "HT" };
 const temporalDirectory = fs.mkdtempSync(
   path.join(os.tmpdir(), "lms-sync-users-")
 );
 
-// Example: ladok.kurser.SF.1624.registrerade_20211.1
-const REGEX_STUDENTS_GROUP =
-  /ladok2\.kurser\.(?<courseCodePrefix>\w{2,3})\.(?<courseCodeSuffix>\w{4})\.registrerade_(?<startTerm>\d{5})\.(?<roundId>\w)/;
-// Example: edu.courses.SF.SF1624.20211.1.teachers
-const REGEX_TEACHERS_GROUP =
-  /edu\.courses\.\w{2,3}\.(?<courseCode>\w{6,7})\.(?<startTerm>\d{5})\.(?<roundId>\w)\.(?<roleName>\w+)/;
 // Example: app.katalog3.T
 const REGEX_EMPLOYEES_GROUP = /app\.katalog3\.(?<department>\w)/;
-
-function createSisCourseId({ courseCode, startTerm, roundId }) {
-  const termNum = startTerm[4];
-  const shortYear = `${startTerm[2]}${startTerm[3]}`;
-  const term = terms[termNum];
-
-  return `${courseCode}${term}${shortYear}${roundId}`;
-}
-
-function convertToStudentEnrollments(ugGroupName, members = []) {
-  const { courseCodePrefix, courseCodeSuffix, startTerm, roundId } =
-    ugGroupName.match(REGEX_STUDENTS_GROUP).groups;
-
-  const courseCode = `${courseCodePrefix}${courseCodeSuffix}`;
-  const sisId = createSisCourseId({ courseCode, startTerm, roundId });
-
-  return members.flatMap((kthId) => [
-    {
-      section_id: sisId,
-      user_id: kthId,
-      status: "active",
-      role_id: 3,
-    },
-
-    // This function does always return a "delete antagna" enrollment without
-    // checking if the antagna is actually enrolled in Canvas
-    {
-      section_id: sisId,
-      user_id: kthId,
-      status: "deleted",
-      role_id: 25,
-    },
-  ]);
-}
 
 /**
  * This function handles a special use case, where each employee at KTH is enrolled in up to five internal courses, each having a course rooms in Canvas.
@@ -94,41 +53,8 @@ function convertToEmployeeEnrollments(ugGroupName, members = []) {
   );
 }
 
-function convertToTeacherEnrollments(ugGroupName, members) {
-  const match = ugGroupName.match(REGEX_TEACHERS_GROUP);
-  const { courseCode, startTerm, roundId, roleName } = match.groups;
-  const sisId = createSisCourseId({ courseCode, startTerm, roundId });
-  let roleId;
-
-  if (roleName === "teachers") {
-    roleId = 4;
-  } else if (roleName === "assistants") {
-    roleId = 5;
-  } else if (roleName === "courseresponsible") {
-    roleId = 9;
-  } else {
-    // TODO: enhance it
-    throw new Error(`Unknown roleName ${roleName}`);
-  }
-
-  return members.map((kthId) => ({
-    section_id: sisId,
-    user_id: kthId,
-    status: "active",
-    role_id: roleId,
-  }));
-}
-
 /** Return the group category */
 function getGroupCategory(groupName) {
-  if (REGEX_STUDENTS_GROUP.test(groupName)) {
-    return "student";
-  }
-
-  if (REGEX_TEACHERS_GROUP.test(groupName)) {
-    return "teacher";
-  }
-
   if (REGEX_EMPLOYEES_GROUP.test(groupName)) {
     return "employee";
   }
@@ -151,17 +77,7 @@ module.exports = async function handleGroupMessage(message) {
 
   serializer.pipe(writer);
 
-  if (category === "teacher") {
-    log.info("Handle as teacher enrollment");
-    convertToTeacherEnrollments(groupName, members).forEach((enr) =>
-      serializer.write(enr)
-    );
-  } else if (category === "student") {
-    log.info("Handle as registered student enrollment");
-    convertToStudentEnrollments(groupName, members).forEach((enr) =>
-      serializer.write(enr)
-    );
-  } else if (category === "employee") {
+  if (category === "employee") {
     log.info("Handle as internal course enrollment");
     convertToEmployeeEnrollments(groupName, members).forEach((enr) =>
       serializer.write(enr)
