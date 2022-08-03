@@ -3,7 +3,7 @@
  */
 const got = require("got");
 const express = require("express");
-const log = require("skog");
+const log = require("skog").default;
 const { getRootAccount } = require("../externalApis/canvasApi");
 const packageFile = require("../../package.json");
 

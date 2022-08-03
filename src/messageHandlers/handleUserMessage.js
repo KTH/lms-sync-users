@@ -1,4 +1,4 @@
-const log = require("skog");
+const log = require("skog").default;
 const canvasApi = require("../externalApis/canvasApi");
 
 function containsHandledAffiliations(affiliations) {

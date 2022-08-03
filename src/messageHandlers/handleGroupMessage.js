@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const log = require("skog");
+const log = require("skog").default;
 const csv = require("fast-csv");
 const canvasApi = require("../externalApis/canvasApi");
 

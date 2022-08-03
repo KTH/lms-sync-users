@@ -22,7 +22,7 @@
     "got": "^11.8.1",
     "pino": "^6.13.3",
     "rhea": "^1.0.12",
-    "skog": "^2.1.0"
+    "skog": "^3.0.2"
   },
   "devDependencies": {
     "@kth/eslint-config-kth": "^1.0.10",
