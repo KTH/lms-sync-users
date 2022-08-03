@@ -5,7 +5,7 @@
   "main": "src/app.js",
   "private": true,
   "scripts": {
-    "test:integration": "cross-env NODE_ENV=test tape \"test/integration/*.js\" -r dotenv/config | tap-spec",
+    "test:integration": "cross-env NODE_ENV=test tape \"test/integration/*.js\" -r dotenv/config | tap-arc",
     "format": "prettier --write .",
     "test": "npm run test:lint && npm run test:format",
     "test:format": "prettier --check .",
@@ -39,7 +39,7 @@
     "rewire": "^2.5.2",
     "rewire-global": "^1.0.11",
     "sinon": "^5.1.1",
-    "tap-spec": "^5.0.0",
+    "tap-arc": "^0.3.5",
     "tape": "^4.13.2"
   }
 }
