@@ -1,8 +1,9 @@
 FROM node:16-alpine
 WORKDIR /usr/src/app
+ARG NODE_ENV=production
 
 COPY package.json package-lock.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 COPY . .
 EXPOSE 3000
