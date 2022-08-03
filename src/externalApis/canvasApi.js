@@ -1,10 +1,12 @@
 /** Singleton object for Canvas API */
-const CanvasApi = require("@kth/canvas-api").default;
+const { default: CanvasApi, minimalErrorHandler } = require("@kth/canvas-api");
 
 const canvas = new CanvasApi(
   process.env.CANVAS_API_URL,
   process.env.CANVAS_API_KEY
 );
+
+canvas.errorHandler = minimalErrorHandler;
 
 /** Get the Canvas user with a given KTH ID. Returns null if not found */
 async function getUser(kthId) {
