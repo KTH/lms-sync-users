@@ -17,7 +17,7 @@
     "@kth/canvas-api": "^4.2.2",
     "@kth/reqvars": "^2.0.1",
     "dotenv": "^6.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "fast-csv": "^4.3.6",
     "got": "^11.8.1",
     "pino": "^6.13.3",
