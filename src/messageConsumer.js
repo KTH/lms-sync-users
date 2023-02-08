@@ -1,6 +1,6 @@
 const EventEmitter = require("events");
 const container = require("rhea");
-const { default: log, runWithSkog } = require("skog");
+const { default: log, runWithSkog, getFields } = require("skog");
 const handleAllMessages = require("./messageHandlers/handleAllMessages");
 
 class MessageError extends Error {
@@ -161,21 +161,23 @@ container.on("message", async (context) => {
   log.debug(
     `logging azure library ids. container id: ${context.container.id}, identifier: ${context.connection.amqp_transport.identifier}`
   );
-
-  await runWithSkog({ message_id: context.message.message_id }, async () => {
-    try {
-      const result = await receiveMessage(context.message);
-      eventEmitter.emit("message_processed", result);
-      context.delivery.accept();
-    } catch (err) {
-      // log error here to make sure that the error log uses the same pre configured log child as other logs
-      log.error({ err }, err.message);
-      context.delivery.modified({
-        deliveryFailed: true,
-        undeliverable_here: false,
-      });
+  await runWithSkog(
+    { ...getFields(), message_id: context.message.message_id },
+    async () => {
+      try {
+        const result = await receiveMessage(context.message);
+        eventEmitter.emit("message_processed", result);
+        context.delivery.accept();
+      } catch (err) {
+        // log error here to make sure that the error log uses the same pre configured log child as other logs
+        log.error({ err }, err.message);
+        context.delivery.modified({
+          deliveryFailed: true,
+          undeliverable_here: false,
+        });
+      }
     }
-  });
+  );
 });
 
 module.exports = {
