@@ -13,6 +13,6 @@ const server = express();
 server.use("/api/lms-sync-users", systemRoutes);
 
 messageConsumer.start();
-server.listen(4000, () => {
-  log.info("Server listening on port 4000");
+server.listen(3000, () => {
+  log.info("Server listening on port 3000");
 });
