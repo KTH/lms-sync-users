@@ -64,7 +64,7 @@ function getGroupCategory(groupName) {
 
 module.exports = async function handleGroupMessage(message) {
   const { ug1Name: groupName, member: members } = message;
-  if (members.length === 0) {
+  if (!members || members.length === 0) {
     return { sisImportId: null };
   }
   const fileName = `lms-sync-users-${groupName}-${Date.now()}.csv`;
