@@ -34,7 +34,7 @@ test("an empty array of members should not cause an error to be thrown", async (
     ug1Name: "app.katalog3.T.TM.TMAE",
     member: [],
   };
-  t.doesNotThrow(async () => await handleMessage(message));
+  t.doesNotThrow(async () => handleMessage(message));
 });
 test("should enroll an employee in Miljöutbildningen and Canvas at KTH", async (t) => {
   t.plan(3);
