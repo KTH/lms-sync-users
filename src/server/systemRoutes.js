@@ -78,9 +78,21 @@ async function monitorHandler(req, res) {
     }`,
     `CANVAS: ${canvasOk ? "OK" : "Canvas is down"}`,
     `CANVASKEY: ${
-      canvasKeyOk ? "OK" : 'Invalid access token (in case if CANVAS is "OK")'
+      canvasOk && !canvasKeyOk ? "Invalid access token for Canvas" : "OK"
     }`,
   ].join("\n");
+
+  if (!idleTimeOk) {
+    log.warn("The server has not received a message in the last 10 hours");
+  }
+
+  if (!canvasKeyOk && canvasOk) {
+    log.warn("Invalid access token for Canvas");
+  }
+
+  if (!canvasOk) {
+    log.warn("Canvas is down");
+  }
 
   res.send(statusStr);
 }
