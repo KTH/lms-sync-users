@@ -12,7 +12,7 @@ services:
              npm ci &&
              npm run test:integration"
     environment:
-      - CANVAS_API_URL=https://kth.beta.instructure.com/api/v1
+      - CANVAS_API_URL=https://kth.test.instructure.com/api/v1
       - CANVAS_API_KEY
       - AZURE_SHARED_ACCESS_KEY_NAME
       - AZURE_SHARED_ACCESS_KEY
